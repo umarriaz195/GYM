@@ -3,6 +3,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 
+require('dotenv').config();
+connectToDatabase();
+
+
+
+
 const app = express();
 
 // Middleware
@@ -23,3 +29,6 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+
+
