@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
-const trainerSchema = new mongoose.Schema({
+const packageSchema = new mongoose.Schema({
   name: {
+    type: String,
+    required: true
+  },
+  fatherName: {
     type: String,
     required: true
   },
@@ -18,16 +22,12 @@ const trainerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  registrationDate: {
-    type: Date,
-    default: Date.now
-  },
-  isActive: {
-    type: Boolean,
-    default: true
+  package: {
+    type: String,
+    required: true
   }
 });
 
-const Trainer = mongoose.model('Trainer', trainerSchema);
+const Package = mongoose.model('Package', packageSchema);
 
-module.exports = Trainer;
+module.exports = Package;
