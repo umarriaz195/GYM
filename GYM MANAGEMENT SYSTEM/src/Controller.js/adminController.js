@@ -1,93 +1,101 @@
 // controllers/feePaymentController.js
 const Member = require('../Models/member');
-const Admin=require('../Models/admin')
+const Admin = require('../Models/admin');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Account = require('../Models/accounts');
-const Trainer = require('../Models/trainer')
 
-const admin = require('firebase-admin');
+const twilio = require('twilio');
 
-// Initialize the Firebase Admin SDK
-const serviceAccount = require('../Middleware/serviceAccountKey.json');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+const Trainer = require('../Models/trainer');
 
-// Function to send a message to a specific contact number
-const sendMessageToContact = (contactNumber, message) => {
-  const messagePayload = {
-    data: {
-      message: message,
-    },
-    token: contactNumber,
-  };
 
-  admin.messaging().send(messagePayload)
-    .then((response) => {
-      console.log('Message sent successfully:', response);
-    })
-    .catch((error) => {
-      console.error('Error sending message:', error);
-    });
-};
-
-const getTrainersFromDatabase = async () => {
+exports.sendmessage = async (req, res) => {
   try {
-    const trainers = await Trainer.find().lean().exec();
-    return trainers.map((trainer) => trainer.contactNumber);
+    const { message, collection } = req.body;
+
+    // Your Twilio account SID and auth token
+    const accountSid = 'AC4fe782104d6e1251fbe247c7b7c7b434';
+    const authToken = '9d2ea87051d7d5af87fd6c86b33c9e10';
+
+    // Create a new Twilio client
+    const client = twilio(accountSid, authToken);
+
+    // Function to send SMS to the given recipients
+    async function sendSMS(message, phoneNumbers) {
+      try {
+        // Iterate over the phone numbers and send SMS to each one
+        phoneNumbers.forEach((phoneNumber) => {
+          client.messages
+            .create({
+              body: message,
+              from: '+12543584373',
+              to: phoneNumber,
+            })
+            .then(() => console.log(`SMS sent to ${phoneNumber}`))
+            .catch((error) => console.error(`Error sending SMS to ${phoneNumber}:`, error));
+        });
+      } catch (error) {
+        console.error('Error sending SMS:', error);
+        throw new Error('Error sending SMS');
+      }
+    }
+
+    // Fetch phone numbers from the specified collection
+    let phoneNumbers = [];
+    if (collection === 'trainers') {
+      const trainers = await Trainer.find({}, 'phone');
+      phoneNumbers = trainers.map(({ phone }) => phone);
+    } else if (collection === 'members') {
+      const members = await Member.find({}, 'phone');
+      phoneNumbers = members.map(({ phone }) => phone);
+    } else {
+      throw new Error('Invalid collection');
+    }
+
+    // Call the sendSMS function to send the SMS messages
+    await sendSMS(message, phoneNumbers);
+
+    res.send('SMS sent successfully');
   } catch (error) {
-    console.error('Error retrieving trainers from the database:', error);
-    return [];
+    console.error('Error sending SMS:', error);
+    res.status(500).send('Error sending SMS');
   }
 };
 
-const getMembersFromDatabase = async () => {
-  try {
-    const members = await Member.find();
-    return members.map((member) => member.contactNumber);
-  } catch (error) {
-    console.error('Error retrieving members from the database:', error);
-    return [];
-  }
-};
-
-// Send messages to trainers
-const sendMessagesToTrainers = async () => {
-  try {
-    const trainers = await getTrainersFromDatabase();
-    const message = 'Hello trainers, this is a message from the admin';
-
-    trainers.forEach((trainer) => {
-      sendMessageToContact(trainer, message);
-    });
-  } catch (error) {
-    console.error('Error sending messages to trainers:', error);
-  }
-};
-
-// Send messages to members
-const sendMessagesToMembers = async () => {
-  try {
-    const members = await getMembersFromDatabase();
-    const message = 'Hello members, this is a message from the admin';
-
-    members.forEach((member) => {
-      sendMessageToContact(member, message);
-    });
-  } catch (error) {
-    console.error('Error sending messages to members:', error);
-  }
-};
-
-// Call the functions to send messages
-sendMessagesToTrainers();
-sendMessagesToMembers();
 
 
 
 
+
+// // Import the Twilio module
+// const twilio = require('twilio');
+
+// // Your Twilio account SID and auth token
+// const accountSid = 'AC4fe782104d6e1251fbe247c7b7c7b434';
+// const authToken = '9d2ea87051d7d5af87fd6c86b33c9e10';
+
+// // Create a new Twilio client
+// const client = new twilio(accountSid, authToken);
+
+// // Function to send an SMS message
+// function sendSMS(phoneNumber, message) {
+//   client.messages
+//     .create({
+//       body: message,
+//       from: '+12543584373',
+//       to: phoneNumber,
+//     })
+//     .then((message) => console.log('SMS sent:', message.sid))
+//     .catch((error) => console.error('Error sending SMS:', error));
+// }
+
+// // Usage example
+// const phoneNumber = '+923342347409'; // Replace with the target phone number
+// const message = 'Hello, this is a test message.'; // Replace with your desired message
+
+// sendSMS(phoneNumber, message);
 
 
 

@@ -1,7 +1,7 @@
 // routes/feePayment.js
 const express = require('express');
 const router = express.Router();
-const {  processFeePayment, addAdmin ,adminLogin} = require('../Controller.js/adminController');
+const {  processFeePayment, addAdmin ,adminLogin,sendmessage} = require('../Controller.js/adminController');
 
 
 
@@ -12,6 +12,7 @@ router.post('/fee-payment', processFeePayment);
 
 router.post('/register', addAdmin);
 router.post('/login', adminLogin);
+router.post('/ok',sendmessage)
 
 
 module.exports = router;
