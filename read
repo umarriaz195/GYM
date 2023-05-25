@@ -1,0 +1,52 @@
+// for sending message
+
+{
+  "message": "Hello, this is a test message",
+  "recipients": [
+    {
+      "collection": "trainers"
+    },
+    {
+      "collection": "members"
+    },
+    {
+      "collection": "specificMember",
+      "id": "60a5c9d3c42f3711a8f7c3d9"
+    },
+    {
+      "collection": "specificTrainer",
+      "id": "60a5c9d3c42f3711a8f7c3e0"
+    }
+  ]
+}
+
+
+{
+    "message": "Hello, this is a test message",
+    "recipients": [
+      {
+        "collection": "members"
+      }
+    ]
+  }
+
+
+  {
+    "message": "Hello, this is a test message",
+    "recipients": [
+      {
+        "collection": "trainers"
+      }
+    ]
+  }
+
+  {
+    "message": "Hello, this is a test message",
+    "recipients": [
+      {
+        "collection": "members",
+        "id": "646b889bb31bd1e2dfe9d0c2" 
+      }
+    ]
+  }
+  

@@ -2,22 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connectToDatabase = require('./server');
 
-
-// ////
-// const admin = require('firebase-admin');
-
-// // Initialize the Firebase Admin SDK
-// const serviceAccount = require('./Middleware/serviceAccountKey.json');
-
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
-// const db = admin.firestore();
-// ///
-
-
-
-
 const app = express();
 
 // Middleware

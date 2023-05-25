@@ -4,20 +4,146 @@ const Admin = require('../Models/admin');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Account = require('../Models/accounts');
-
 const twilio = require('twilio');
-
-
 const Trainer = require('../Models/trainer');
+require('dotenv').config();
 
+
+
+
+
+
+exports.checkMonthlyFeeStatus = async (req, res) => {
+  try {
+    const members = await Member.find({ monthlyFeeStatus: false });
+
+    res.json(members);
+  } catch (error) {
+    console.error('Error checking monthly fee status:', error);
+    res.status(500).send('Error checking monthly fee status');
+  }
+};
+
+
+// ...
+
+// exports.sendmessage = async (req, res) => {
+//   try {
+//     const { message, collection } = req.body;
+
+//     // Retrieve Twilio account SID and auth token from environment variables
+//     const accountSid = process.env.TWILIO_ACCOUNT_SID;
+//     const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+//     // Create a new Twilio client
+//     const client = twilio(accountSid, authToken);
+
+//     // Function to send SMS to the given recipients
+//     async function sendSMS(message, phoneNumbers) {
+//       try {
+//         // Iterate over the phone numbers and send SMS to each one
+//         phoneNumbers.forEach((phoneNumber) => {
+//           client.messages
+//             .create({
+//               body: message,
+//               from: '+12543584373',
+//               to: phoneNumber,
+//             })
+//             .then(() => console.log(`SMS sent to ${phoneNumber}`))
+//             .catch((error) => console.error(`Error sending SMS to ${phoneNumber}:`, error));
+//         });
+//       } catch (error) {
+//         console.error('Error sending SMS:', error);
+//         throw new Error('Error sending SMS');
+//       }
+//     }
+
+//     // Fetch phone numbers from the specified collection
+//     let phoneNumbers = [];
+//     if (collection === 'trainers') {
+//       const trainers = await Trainer.find({}, 'phone');
+//       phoneNumbers = trainers.map(({ phone }) => phone);
+//     } else if (collection === 'members') {
+//       const members = await Member.find({}, 'phone');
+//       phoneNumbers = members.map(({ phone }) => phone);
+//     } else {
+//       throw new Error('Invalid collection');
+//     }
+
+//     // Call the sendSMS function to send the SMS messages
+//     await sendSMS(message, phoneNumbers);
+
+//     res.send('SMS sent successfully');
+//   } catch (error) {
+//     console.error('Error sending SMS:', error);
+//     res.status(500).send('Error sending SMS');
+//   }
+// };
+
+
+//
+// exports.sendmessage = async (req, res) => {
+//   try {
+//     const { message, collection } = req.body;
+
+//     // Your Twilio account SID and auth token
+//     const accountSid = 'AC4fe782104d6e1251fbe247c7b7c7b434';
+//     const authToken = '9d2ea87051d7d5af87fd6c86b33c9e10';
+
+//     // Create a new Twilio client
+//     const client = twilio(accountSid, authToken);
+
+//     // Function to send SMS to the given recipients
+//     async function sendSMS(message, phoneNumbers) {
+//       try {
+//         // Iterate over the phone numbers and send SMS to each one
+//         phoneNumbers.forEach((phoneNumber) => {
+//           client.messages
+//             .create({
+//               body: message,
+//               from: '+12543584373',
+//               to: phoneNumber,
+//             })
+//             .then(() => console.log(`SMS sent to ${phoneNumber}`))
+//             .catch((error) => console.error(`Error sending SMS to ${phoneNumber}:`, error));
+//         });
+//       } catch (error) {
+//         console.error('Error sending SMS:', error);
+//         throw new Error('Error sending SMS');
+//       }
+//     }
+
+//     // Fetch phone numbers from the specified collection
+//     let phoneNumbers = [];
+//     if (collection === 'trainers') {
+//       const trainers = await Trainer.find({}, 'phone');
+//       phoneNumbers = trainers.map(({ phone }) => phone);
+//     } else if (collection === 'members') {
+//       const members = await Member.find({}, 'phone');
+//       phoneNumbers = members.map(({ phone }) => phone);
+//     } else {
+//       throw new Error('Invalid collection');
+//     }
+
+//     // Call the sendSMS function to send the SMS messages
+//     await sendSMS(message, phoneNumbers);
+
+//     res.send('SMS sent successfully');
+//   } catch (error) {
+//     console.error('Error sending SMS:', error);
+//     res.status(500).send('Error sending SMS');
+//   }
+// };
+
+//toalllllll
 
 exports.sendmessage = async (req, res) => {
   try {
-    const { message, collection } = req.body;
+    const { message, recipients } = req.body;
 
-    // Your Twilio account SID and auth token
-    const accountSid = 'AC4fe782104d6e1251fbe247c7b7c7b434';
-    const authToken = '9d2ea87051d7d5af87fd6c86b33c9e10';
+    // Retrieve Twilio account SID and auth token from environment variables
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
 
     // Create a new Twilio client
     const client = twilio(accountSid, authToken);
@@ -42,16 +168,32 @@ exports.sendmessage = async (req, res) => {
       }
     }
 
-    // Fetch phone numbers from the specified collection
+    // Fetch phone numbers from the specified recipients
     let phoneNumbers = [];
-    if (collection === 'trainers') {
-      const trainers = await Trainer.find({}, 'phone');
-      phoneNumbers = trainers.map(({ phone }) => phone);
-    } else if (collection === 'members') {
-      const members = await Member.find({}, 'phone');
-      phoneNumbers = members.map(({ phone }) => phone);
-    } else {
-      throw new Error('Invalid collection');
+    for (const recipient of recipients) {
+      if (recipient.collection === 'trainers') {
+        const trainers = await Trainer.find({}, 'phone');
+        phoneNumbers.push(...trainers.map(({ phone }) => phone));
+      } else if (recipient.collection === 'members') {
+        const members = await Member.find({}, 'phone');
+        phoneNumbers.push(...members.map(({ phone }) => phone));
+      } else if (recipient.collection === 'specificMember') {
+        const member = await Member.findById(recipient.id, 'phone');
+        if (member) {
+          phoneNumbers.push(member.phone);
+        } else {
+          throw new Error('Member not found');
+        }
+      } else if (recipient.collection === 'specificTrainer') {
+        const trainer = await Trainer.findById(recipient.id, 'phone');
+        if (trainer) {
+          phoneNumbers.push(trainer.phone);
+        } else {
+          throw new Error('Trainer not found');
+        }
+      } else {
+        throw new Error('Invalid collection');
+      }
     }
 
     // Call the sendSMS function to send the SMS messages
@@ -63,9 +205,6 @@ exports.sendmessage = async (req, res) => {
     res.status(500).send('Error sending SMS');
   }
 };
-
-
-
 
 
 
