@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
+
 import {
   Grid,
   Card,
@@ -17,6 +18,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
+import axios from 'axios'
 import MenuIcon from '@mui/icons-material/Menu';
 import MainGraph from 'renderer/Graphs/MainGraph';
 import SideGraph from 'renderer/Graphs/SideGraph';
@@ -24,9 +26,36 @@ import useStyles from './Style';
 import { transactions, expenses } from './Data';
 import { scrollbarStyle } from 'renderer/Common/scrollbarStyle';
 
+
 const DashboardPage = () => {
   const classes = useStyles();
+const [balance,setBalance]=useState(null)
+const [profit,setProfit]=useState(null)
+const [loss,setLoss]=useState(null)
+const [users,setUsers]=useState(0)
+const [creditRecord,setCreditRecord]=useState([])
+const [debitRecord,setDebitRecord]=useState([])
 
+
+// const [,setBalance]=useState(null)
+
+  const result=async()=>{
+    try{
+    const response=await  axios.get('http://localhost:7000/owner/dashboard')
+    const data=response.data
+    console.log(data)
+    setBalance(data.balance)
+    data.profit>0?setProfit(data.profit):setLoss(data.loss)
+    setUsers(data.users)
+    setCreditRecord(data.creditRecord)
+    setDebitRecord(data.debitRecord)
+
+    }catch(e){
+console.log('an error occurs',e)
+    }
+  
+  }
+  result()
   // Apply the custom scrollbar style
   const CustomScrollbarStyle = () => (
     <style dangerouslySetInnerHTML={{ __html: scrollbarStyle }} />
@@ -67,16 +96,16 @@ const DashboardPage = () => {
                   marginBottom: '10px',
                 }}
               >
-                $24k
+                {`Rs.${balance}`}
               </Typography>
               <div className={classes.arrowContainer}>
                 <ArrowUpwardIcon />
-                <Typography variant="subtitle2">12%</Typography>
+                <Typography variant="subtitle2">{profit?`${profit}%`:`${loss}%`}</Typography>
                 <Typography
                   variant="subtitle2"
                   style={{ marginLeft: '20px', color: 'gray' }}
                 >
-                  Since last month
+                  In this month
                 </Typography>
               </div>
             </CardContent>
@@ -113,7 +142,7 @@ const DashboardPage = () => {
                   marginBottom: '10px',
                 }}
               >
-                $1.6k
+                {users}
               </Typography>
               <div className={classes.arrowContainer}>
                 <ArrowDownwardIcon />
@@ -122,7 +151,7 @@ const DashboardPage = () => {
                   variant="subtitle2"
                   style={{ marginLeft: '10px', color: 'gray' }}
                 >
-                  Since last month
+                  In this month
                 </Typography>
               </div>
             </CardContent>
@@ -255,7 +284,7 @@ const DashboardPage = () => {
               }}
             >
               <div style={{ margin: 'auto', maxWidth: '700px' }}>
-                {transactions.map((transaction, index) => (
+                {creditRecord.map((transaction, index) => (
                   <div
                     key={index}
                     style={{
@@ -266,10 +295,10 @@ const DashboardPage = () => {
                       borderBottom: '1px solid #bdbdbd',
                     }}
                   >
-                    <div>{transaction.customerName}</div>
-                    <div>{transaction.dateTime}</div>
+                    <div>{transaction.source}</div>
+                    {/* <div>{transaction.dateTime}</div> */}
                     <div style={{ color: 'green' }}>
-                      {transaction.paidAmount}
+                      {transaction.amount}
                     </div>
                   </div>
                 ))}
@@ -311,7 +340,7 @@ const DashboardPage = () => {
               }}
             >
               <div style={{ margin: 'auto', maxWidth: '700px' }}>
-                {expenses.map((expenses, index) => (
+                {debitRecord.map((expenses, index) => (
                   <div
                     key={index}
                     style={{
@@ -322,10 +351,10 @@ const DashboardPage = () => {
                       borderBottom: '1px solid #bdbdbd',
                     }}
                   >
-                    <div>{expenses.customerName}</div>
-                    <div>{expenses.dateTime}</div>
+                    <div>{expenses.source}</div>
+                    {/* <div>{expenses.dateTime}</div> */}
                     <div style={{ color: 'red' }}>
-                      {expenses.paidAmount}
+                      {expenses.amount}
                     </div>
                   </div>
                 ))}

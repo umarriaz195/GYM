@@ -23,6 +23,10 @@ const transactionSchema = new mongoose.Schema({
   },
   debit: {
     type: Number
+  },
+  users:{
+    type:Number,
+    default:0
   }
 });
 

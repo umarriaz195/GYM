@@ -72,9 +72,11 @@ try{
 exports.dashboard=async(req,res)=>{
   try{
 const account=await Account.findOne()
+
 const credits=account.record.filter((x)=>x.type==="credit")
 const debits=account.record.filter((x)=>x.type==="debit")
 const payload={
+  users:account.users,
   balance:account.balance,
   creditRecord:credits,
   debitRecord:debits,

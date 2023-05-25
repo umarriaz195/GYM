@@ -14,7 +14,7 @@ router.post('/login', adminController.adminLogin);
 
 router.post('/ok', adminController.sendmessage)
 
-router.get('/checkactivestatus', adminController.checkMonthlyFeeStatus)
+// router.get('/checkactivestatus', adminController.checkMonthlyFeeStatus)
 
 router.get('/accounts', adminController.getAccountDetails)
 

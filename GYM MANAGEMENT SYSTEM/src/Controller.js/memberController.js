@@ -1,5 +1,5 @@
 const Member = require('../Models/member');
-
+const Account=require('../Models/accounts')
 const cron = require('node-cron');
 const moment = require('moment-timezone');
 
@@ -26,6 +26,7 @@ exports.createMember = async (req, res) => {
       isActive // Set the active status from the request body
     });
     await member.save();
+    await Account.updateOne({},{$inc:{users:1}})
     res.status(200).json({ message: 'Member created successfully', member });
   } catch (error) {
     console.error('Error creating member:', error.message);
@@ -34,21 +35,21 @@ exports.createMember = async (req, res) => {
 };
 
 // Update the monthlyFeeDate on the 1st day of every month
-cron.schedule('0 0 1 * *', async () => {
-  try {
-    console.log('Cron job started'); // Add this line to check if the cron job is running
+// cron.schedule('0 0 1 * *', async () => {
+//   try {
+//     console.log('Cron job started'); // Add this line to check if the cron job is running
 
-    const members = await Member.find();
-    for (const member of members) {
-      member.monthlyFeeDate = moment().tz('Asia/Karachi').format('YYYY-MM-DD'); // Set the monthly fee date as the current date in your timezone
-      await member.save();
-    }
+//     const members = await Member.find();
+//     for (const member of members) {
+//       member.monthlyFeeDate = moment().tz('Asia/Karachi').format('YYYY-MM-DD'); // Set the monthly fee date as the current date in your timezone
+//       await member.save();
+//     }
 
-    console.log('Monthly fee dates updated successfully'); // Add this line to check if the monthly fee dates are updated
-  } catch (error) {
-    console.error('Error updating monthly fee dates:', error.message);
-  }
-});
+//     console.log('Monthly fee dates updated successfully'); // Add this line to check if the monthly fee dates are updated
+//   } catch (error) {
+//     console.error('Error updating monthly fee dates:', error.message);
+//   }
+// });
 
 
 
