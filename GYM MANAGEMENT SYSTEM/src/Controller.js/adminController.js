@@ -4,81 +4,9 @@ const Admin = require('../Models/admin');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Account = require('../Models/accounts');
+
 const twilio = require('twilio');
 const Trainer = require('../Models/trainer');
-require('dotenv').config();
-
-
-
-
-
-
-exports.checkMonthlyFeeStatus = async (req, res) => {
-  try {
-    const members = await Member.find({ monthlyFeeStatus: false });
-
-    res.json(members);
-  } catch (error) {
-    console.error('Error checking monthly fee status:', error);
-    res.status(500).send('Error checking monthly fee status');
-  }
-};
-
-
-// ...
-
-// exports.sendmessage = async (req, res) => {
-//   try {
-//     const { message, collection } = req.body;
-
-//     // Retrieve Twilio account SID and auth token from environment variables
-//     const accountSid = process.env.TWILIO_ACCOUNT_SID;
-//     const authToken = process.env.TWILIO_AUTH_TOKEN;
-
-//     // Create a new Twilio client
-//     const client = twilio(accountSid, authToken);
-
-//     // Function to send SMS to the given recipients
-//     async function sendSMS(message, phoneNumbers) {
-//       try {
-//         // Iterate over the phone numbers and send SMS to each one
-//         phoneNumbers.forEach((phoneNumber) => {
-//           client.messages
-//             .create({
-//               body: message,
-//               from: '+12543584373',
-//               to: phoneNumber,
-//             })
-//             .then(() => console.log(`SMS sent to ${phoneNumber}`))
-//             .catch((error) => console.error(`Error sending SMS to ${phoneNumber}:`, error));
-//         });
-//       } catch (error) {
-//         console.error('Error sending SMS:', error);
-//         throw new Error('Error sending SMS');
-//       }
-//     }
-
-//     // Fetch phone numbers from the specified collection
-//     let phoneNumbers = [];
-//     if (collection === 'trainers') {
-//       const trainers = await Trainer.find({}, 'phone');
-//       phoneNumbers = trainers.map(({ phone }) => phone);
-//     } else if (collection === 'members') {
-//       const members = await Member.find({}, 'phone');
-//       phoneNumbers = members.map(({ phone }) => phone);
-//     } else {
-//       throw new Error('Invalid collection');
-//     }
-
-//     // Call the sendSMS function to send the SMS messages
-//     await sendSMS(message, phoneNumbers);
-
-//     res.send('SMS sent successfully');
-//   } catch (error) {
-//     console.error('Error sending SMS:', error);
-//     res.status(500).send('Error sending SMS');
-//   }
-// };
 
 
 //
@@ -208,6 +136,9 @@ exports.sendmessage = async (req, res) => {
 
 
 
+
+
+
 // // Import the Twilio module
 // const twilio = require('twilio');
 
@@ -307,6 +238,15 @@ exports.adminLogin = async (req, res) => {
 };
 
 
+//
+exports.getAccountDetails = async (req, res) => {
+  try {
+    const account = await Account.findOne()
+    res.status(200).json({ data: account })
+  } catch (e) {
+    res.status(500).json(e)
+  }
+}
 
 
 
@@ -317,15 +257,6 @@ exports.adminLogin = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-//fee payment
 
 
 
@@ -356,14 +287,19 @@ exports.processFeePayment = async (req, res) => {
 
     // Find or create the company's account
     let account = await Account.findOne();
+    console.log(account)
     if (!account) {
-      account = new Account();
+      account = Account.create();
     }
 
     // Add the payment transaction to the company's accounts
-    const paymentAmount = member.package; // Assuming the payment amount is equal to the member's package value
-    account.balance.push({ amount: paymentAmount, date: new Date() });
-    await account.save();
+
+
+    await Account.updateOne({ _id: AccountId }, {
+      $inc: { balance: member.package, credit: member.package },
+      $push: { record: { source: member._id, amount: member.package, type: "fees" } }
+
+    });
 
     res.status(200).json({ message: 'Fee payment processed successfully' });
   } catch (error) {
@@ -372,5 +308,19 @@ exports.processFeePayment = async (req, res) => {
   }
 };
 
+//
+exports.paySalary = async (req, res) => {
+  try {
+    const { trainerId } = req.params
+    const trainer = await Trainer.findById(trainerId)
+    await Account.updateOne({ _id: AccountId }, {
 
-  
+      $inc: { debit: trainer.salary, balance: -trainer.salary },
+      $push: { record: { source: trainer._id, amount: trainer.salary, type: 'debit' } }
+    })
+    res.status(200).json("success")
+  } catch (e) {
+    res.status(500).send(e)
+    console.log(e)
+  }
+}

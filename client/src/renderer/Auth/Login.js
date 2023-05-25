@@ -14,7 +14,7 @@ const LoginPage = () => {
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
       <Grid container >
-        <Grid item xs={6} style={{ height: '100vh', backgroundColor: 'black' }} >
+        <Grid item xs={6} style={{ height: '100vh', backgroundColor: 'white' }} >
           <Paper style={{ padding: '2rem', marginTop: '80px', width:'80%', marginLeft: '30px', height: '500px' }}>
             <Typography variant="h4" component="h4" align="start" style={{ fontWeight: 'bolder' }} >
               Login
@@ -37,7 +37,7 @@ const LoginPage = () => {
                 fullWidth
                 margin="normal"
               />
-              <Button variant="contained" fullWidth sx={{ marginTop: '1rem' }} onClick={gotoDashboard} >
+              <Button variant="contained" fullWidth sx={{ marginTop: '1rem', height: '50px', borderRadius: '10px' }} onClick={gotoDashboard} >
                 Login
               </Button>
             </form>

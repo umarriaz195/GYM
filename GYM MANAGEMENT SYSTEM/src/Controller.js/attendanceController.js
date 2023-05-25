@@ -2,7 +2,6 @@ const TrainerAttendance = require('../Models/attendance');
 
 
 
-
 exports.recordAttendance = async (req, res) => {
   const { trainerId, checkInTime } = req.body;
   const currentDate = new Date(checkInTime);
@@ -20,8 +19,6 @@ exports.recordAttendance = async (req, res) => {
       });
     }
 
-   
-
     let yearIndex = attendance.attendance.findIndex(
       (yearAttendance) => yearAttendance.year === currentYear
     );
@@ -33,8 +30,6 @@ exports.recordAttendance = async (req, res) => {
       });
       yearIndex = attendance.attendance.length - 1;
     }
-
-    
 
     let monthIndex = attendance.attendance[yearIndex].months.findIndex(
       (monthAttendance) => monthAttendance.month === currentMonth
@@ -48,13 +43,13 @@ exports.recordAttendance = async (req, res) => {
       monthIndex = attendance.attendance[yearIndex].months.length - 1;
     }
 
-    
+
 
     let currentDayAttendance = attendance.attendance[yearIndex].months[monthIndex].days.find(
       (dayAttendance) => dayAttendance.day === currentDay
     );
 
-    
+
 
     if (!currentDayAttendance) {
       currentDayAttendance = {
@@ -63,8 +58,6 @@ exports.recordAttendance = async (req, res) => {
       };
       attendance.attendance[yearIndex].months[monthIndex].days.push(currentDayAttendance);
     }
-
-    
 
     await attendance.save();
 
@@ -76,9 +69,6 @@ exports.recordAttendance = async (req, res) => {
 };
 
 
-
-
-//
 exports.updateAttendance = async (req, res) => {
   const { trainerId, checkOutTime } = req.body;
   const currentDate = new Date(checkOutTime);

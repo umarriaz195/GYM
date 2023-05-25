@@ -1,19 +1,23 @@
-// routes/feePayment.js
 const express = require('express');
 const router = express.Router();
-const {  processFeePayment, addAdmin ,adminLogin,sendmessage,checkMonthlyFeeStatus} = require('../Controller.js/adminController');
+const adminController = require('../Controller.js/adminController')
 
 
 
+router.post('/fee-payment', adminController.processFeePayment);
 
+router.put('/pay/:trainerId', adminController.paySalary)
 
-// API route for fee payment
-router.post('/fee-payment', processFeePayment);
+router.post('/register', adminController.addAdmin);
 
-router.post('/register', addAdmin);
-router.post('/login', adminLogin);
-router.post('/ok',sendmessage)
-router.get('/checkactivestatus', checkMonthlyFeeStatus)
+router.post('/login', adminController.adminLogin);
+
+router.post('/ok', adminController.sendmessage)
+
+router.get('/checkactivestatus', adminController.checkMonthlyFeeStatus)
+
+router.get('/accounts', adminController.getAccountDetails)
+
 
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Owner = require('../Models/owner');
-
+const Account=require('../Models/accounts')
 exports.ownerSignup = async (req, res) => {
   const { name, email, password ,contactNo , } = req.body;
 
@@ -59,3 +59,32 @@ exports.ownerLogin = async (req, res) => {
     }
   };
   
+//
+exports.createAccount=async(req,res)=>{
+try{
+  await Account.create({balance:10})
+  res.status(200).json("success")
+}catch(e){
+  res.status(500).json(e)
+}
+}
+
+exports.dashboard=async(req,res)=>{
+  try{
+const account=await Account.findOne()
+const credits=account.record.filter((x)=>x.type==="credit")
+const debits=account.record.filter((x)=>x.type==="debit")
+const payload={
+  balance:account.balance,
+  creditRecord:credits,
+  debitRecord:debits,
+  status:account.status,
+  profit:account.profitPercentage,
+  loss:account.lossPercentage
+}
+  res.status(200).json(payload)
+}catch(e){
+    res.status(500).json(e)
+    console.log(e)
+  }
+}

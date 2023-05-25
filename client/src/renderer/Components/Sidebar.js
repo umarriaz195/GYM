@@ -72,7 +72,7 @@ const Sidebar = () => {
             button
             style={{
               ...listItemStyle,
-              backgroundColor: location.pathname === '/' ? '#bdbdbd' : 'initial',
+              backgroundColor: location.pathname === '/dashboard' ? '#bdbdbd' : 'initial',
             }}
             onClick={gotoDashboard}
           >
