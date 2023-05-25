@@ -1,7 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const connectToDatabase = require('./server');
+const cors = require('cors');
 
+
+
+// Enable CORS for all routes
 
 // ////
 // const admin = require('firebase-admin');
@@ -19,6 +23,7 @@ const connectToDatabase = require('./server');
 
 
 const app = express();
+app.use(cors());
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));

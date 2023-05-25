@@ -153,3 +153,14 @@ exports.checkMonthlyFeeStatus = async (req, res) => {
 };
 
 
+//
+exports.getActiveMembers=async(req,res)=>{
+try{
+  const members=await Member.find({isActive:true})
+  res.status(200).json(members)
+}
+catch(e){
+  res.status(500).send(e)
+}
+
+}

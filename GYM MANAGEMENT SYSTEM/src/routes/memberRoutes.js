@@ -6,7 +6,9 @@ const memberController = require('../Controller.js/memberController');
 router.post('/', memberController.createMember);
 
 // Read all members
-router.get('/', memberController.getAllMembers);
+router.get('/all', memberController.getAllMembers);
+// Get active members
+router.get('/active-members',memberController.getActiveMembers)
 
 // Read a specific member by ID
 router.get('/:memberId', memberController.getMemberById);
