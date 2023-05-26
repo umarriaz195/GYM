@@ -295,9 +295,9 @@ exports.processFeePayment = async (req, res) => {
     // Add the payment transaction to the company's accounts
 
 
-    await Account.updateOne({ _id: AccountId }, {
+    await Account.updateOne({}, {
       $inc: { balance: member.package, credit: member.package },
-      $push: { record: { source: member._id, amount: member.package, type: "fees" } }
+      $push: { record: { source: member.name, amount: member.package, type: "fees" } }
 
     });
 
@@ -313,10 +313,10 @@ exports.paySalary = async (req, res) => {
   try {
     const { trainerId } = req.params
     const trainer = await Trainer.findById(trainerId)
-    await Account.updateOne({ _id: AccountId }, {
+    await Account.updateOne({}, {
 
       $inc: { debit: trainer.salary, balance: -trainer.salary },
-      $push: { record: { source: trainer._id, amount: trainer.salary, type: 'debit' } }
+      $push: { record: { source: trainer.name, amount: trainer.salary, type: 'salary' } }
     })
     res.status(200).json("success")
   } catch (e) {

@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const connectToDatabase = require('./server');
 const cors = require('cors');
 
-
+// require('./check')
 const app = express();
 app.use(cors());
 

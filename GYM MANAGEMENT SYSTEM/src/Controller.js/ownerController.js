@@ -73,16 +73,20 @@ exports.dashboard=async(req,res)=>{
   try{
 const account=await Account.findOne()
 
-const credits=account.record.filter((x)=>x.type==="credit")
-const debits=account.record.filter((x)=>x.type==="debit")
+const credits=account.record.filter((x)=>x.type==="fees"||x.type==='investment')
+const debits=account.record.filter((x)=>x.type==="salary"||x.type==='bill')
 const payload={
   users:account.users,
   balance:account.balance,
   creditRecord:credits,
   debitRecord:debits,
   status:account.status,
+  profitAmount:account.profitAmount,
+  lossAmount:account.lossAmount,
   profit:account.profitPercentage,
-  loss:account.lossPercentage
+  loss:account.lossPercentage,
+  monthlyDetails:account.monthlyRecord,
+  yearlyDetails:account.yearlyRecord
 }
   res.status(200).json(payload)
 }catch(e){
