@@ -21,7 +21,7 @@ const MainGraph = () => {
   const lossData = data.map((entry) => ({ month: entry.month, value: Math.abs(entry.loss) }));
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ height: 500, width: '100%', backgroundColor: '#f5f5f5' }}>
       <VictoryChart domainPadding={20}>
         <VictoryAxis tickValues={data.map((entry) => entry.month)} />
         <VictoryAxis dependentAxis />

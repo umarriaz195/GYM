@@ -11,11 +11,13 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import CalendarModal from 'renderer/Common/Calendar';
-import Modal from './TrainerModal';
+import CalendarModal from 'renderer/Common/Calendar/Calendar';
+import Modal from './TrainerModals/TrainerModal';
 import EventIcon from '@mui/icons-material/Event';
 import { IconButton } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import TrainerEditModal from './TrainerModals/TrainerEditModal';
+import TrainerViewModal from './TrainerModals/TrainerViewModal';
 
 const TrainerPage = () => {
   // Trainers data array
@@ -232,7 +234,11 @@ const TrainerPage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [openTrainerModal, setOpenTrainerModal] = useState(false);
   const [openCalendarModal, setOpenCalendarModal] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedTrainer, setSelectedTrainer] = useState(null);
 
+  // OPTIONSS
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
@@ -240,6 +246,8 @@ const TrainerPage = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+
+  // TRAINER MODAL
 
   const handleOpenTrainerModal = () => {
     setOpenTrainerModal(true);
@@ -249,12 +257,48 @@ const TrainerPage = () => {
     setOpenTrainerModal(false);
   };
 
+  // CALENDAR MODAL
+
   const handleOpenCalendarModal = () => {
     setOpenCalendarModal(true);
   };
 
   const handleCloseCalendarModal = () => {
     setOpenCalendarModal(false);
+  };
+
+  // EDIT BUTTON MODAL
+
+  const handleEditButtonClick = () => {
+    setEditModalOpen(true);
+  };
+
+  const handleEditModalClose = () => {
+    setEditModalOpen(false);
+  };
+
+  // VIEW BUTTON MODAL
+
+  const handleViewModalOpen = (trainer) => {
+    setSelectedTrainer(trainer);
+    setViewModalOpen(true);
+  };
+
+  const handleViewModalClose = () => {
+    setViewModalOpen(false);
+    setSelectedTrainer(null);
+  };
+
+  // Render the trainers' data and an "View" button for each trainer
+  const renderTrainers = () => {
+    return trainers.map((trainer) => (
+      <div key={trainer.id}>
+        <span>{trainer.name}</span>
+        <span>{trainer.email}</span>
+        <span>{trainer.contact}</span>
+        <button onClick={() => handleModalOpen(trainer)}>View</button>
+      </div>
+    ));
   };
 
   return (
@@ -302,7 +346,7 @@ const TrainerPage = () => {
             }}
           >
             <InputLabel style={{ marginLeft: '8px' }}>
-              Filter Trainers By
+              Filter Trainers
             </InputLabel>
             <Select
               value={selectedOption}
@@ -315,11 +359,13 @@ const TrainerPage = () => {
                 borderRadius: '20px',
               }}
             >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="option1">Active Trainers</MenuItem>
-              <MenuItem value="option2">Inactive Trainers</MenuItem>
-              <MenuItem value="option3">Men</MenuItem>
-              <MenuItem value="option3">Women</MenuItem>
+              <MenuItem value="option1" selected>
+                All
+              </MenuItem>
+              <MenuItem value="option2">Active Trainers</MenuItem>
+              <MenuItem value="option3">Inactive Trainers</MenuItem>
+              <MenuItem value="option4">Men</MenuItem>
+              <MenuItem value="option5">Women</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -349,15 +395,45 @@ const TrainerPage = () => {
               <div>{trainers.date}</div>
               <div>{trainers.time}</div>
               <div style={classes.trainersButtons}>
-                <button style={classes.viewButton}>View</button>
-                <button style={classes.editButton}>Edit</button>
+                <button
+                  style={classes.viewButton}
+                  onClick={handleViewModalOpen}
+                >
+                  View
+                </button>
+                <TrainerViewModal
+                  open={viewModalOpen}
+                  onClose={handleViewModalClose}
+                  trainer={selectedTrainer}
+                />
+                <button
+                  style={classes.editButton}
+                  onClick={handleEditButtonClick}
+                >
+                  Edit
+                </button>
+                <TrainerEditModal
+                  open={editModalOpen}
+                  onClose={handleEditModalClose}
+                  // trainer={}
+                />
                 <button style={classes.removeButton}>Remove</button>
                 <div>
-                  <IconButton onClick={handleOpenCalendarModal}>
-                    <CalendarMonthRoundedIcon/>
+                  <IconButton
+                    onClick={handleOpenCalendarModal}
+                    style={{
+                      backgroundColor: 'green',
+                      color: 'white',
+                      borderRadius: '5px',
+                    }}
+                  >
+                    <CalendarMonthRoundedIcon />
                   </IconButton>
 
-                  <CalendarModal open={openCalendarModal} onClose={handleCloseCalendarModal} />
+                  <CalendarModal
+                    open={openCalendarModal}
+                    onClose={handleCloseCalendarModal}
+                  />
                 </div>
               </div>
             </div>

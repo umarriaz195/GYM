@@ -12,6 +12,7 @@ const Message = () => {
   const [message, setMessage] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedOption, setSelectedOption] = useState('');
+  const [showList, setShowList] = useState(false);
 
   const handleSend = () => {
     // Perform send message logic here
@@ -25,6 +26,7 @@ const Message = () => {
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
     setAnchorEl(null);
+    setShowList(true);
   };
 
   const handleCloseMenu = () => {
@@ -32,7 +34,7 @@ const Message = () => {
   };
 
   return (
-    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+    <div style={{ marginTop: '50px' }}>
       <TextField
         label="Message"
         variant="outlined"
@@ -42,9 +44,19 @@ const Message = () => {
         multiline
         rows={4}
         margin="normal"
-        style={{ width:'50%', marginLeft: '250px' }}
+        style={{ width: '50%', marginLeft: '250px' }}
       />
-      <Button variant="contained" onClick={handleOptionClick} style={{ width: '20%', marginLeft: '420px', borderRadius: '20px', backgroundColor: 'orange', marginTop: '5px' }}>
+      <Button
+        variant="contained"
+        onClick={handleOptionClick}
+        style={{
+          width: '20%',
+          marginLeft: '420px',
+          borderRadius: '20px',
+          backgroundColor: 'orange',
+          marginTop: '5px',
+        }}
+      >
         Send To
       </Button>
       <Menu
@@ -53,20 +65,29 @@ const Message = () => {
         onClose={handleCloseMenu}
       >
         <MenuItem onClick={() => handleOptionSelect('all')}>All</MenuItem>
-        <MenuItem onClick={() => handleOptionSelect('users')}>All Users</MenuItem>
+        <MenuItem onClick={() => handleOptionSelect('users')}>
+          All Users
+        </MenuItem>
         <MenuItem onClick={() => handleOptionSelect('trainers')}>
           All Trainers
         </MenuItem>
       </Menu>
-      <Box mt={2}>
-        <Button variant="contained" color="primary" onClick={handleSend} style={{width:'20%', marginLeft: '420px', borderRadius: '20px', backgroundColor: 'darkblue'}}>
-          Send
-        </Button>
-      </Box>
-      {selectedOption && (
-        <Typography variant="body2" mt={2}>
-          Selected Option: {selectedOption}
-        </Typography>
+      {showList && (
+        <div>
+          {/* Dummy data for trainers and members */}
+          <Typography variant="h6">Trainers:</Typography>
+          <ul>
+            <li>Trainer 1</li>
+            <li>Trainer 2</li>
+            <li>Trainer 3</li>
+          </ul>
+          <Typography variant="h6">Members:</Typography>
+          <ul>
+            <li>Member 1</li>
+            <li>Member 2</li>
+            <li>Member 3</li>
+          </ul>
+        </div>
       )}
     </div>
   );

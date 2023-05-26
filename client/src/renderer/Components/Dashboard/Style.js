@@ -146,11 +146,13 @@ import { makeStyles } from '@mui/styles';
     height: '500px',
     width: '100%',
     marginTop: '-180px',
-    backgroundColor: 'white',
+    backgroundColor: '#f5f5f5',
     justifyContent: 'space-between',
   },
   graphSection1: {
     flex: '70%',
+    background: '#fafafa',
+    paddingRight: '5px'
   },
   graphSection2: {
     flex: '30%',

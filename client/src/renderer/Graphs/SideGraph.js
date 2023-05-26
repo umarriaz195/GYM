@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
   chartContainer: {
     height: 424,
     width: '90%',
-    border: 'none',
+    borderBottom: '2px solid black',
     boxShadow: 'none',
     padding: 0, // Remove padding
     '& .recharts-wrapper': {
@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
   card: {
     width: '100%',
     marginBottom: '16px',
+    boxShadow: 'none',
+    backgroundColor: '#f5f5f5'
   },
   labelContainer: {
     display: 'flex',
