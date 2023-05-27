@@ -1,5 +1,5 @@
 const Trainer = require('../Models/trainer');
-
+const attendanceModel=require('../Models/attendance')
 
 // Create a new trainer
 exports.addTrainer = async (req, res) => {
@@ -26,7 +26,7 @@ exports.addTrainer = async (req, res) => {
 exports.getAllTrainers = async (req, res) => {
   try {
     const trainers = await Trainer.find();
-    res.status(200).json({ trainers });
+    res.status(200).json(trainers);
   } catch (error) {
     console.error('Error getting trainers:', error.message);
     res.status(500).json({ message: 'Failed to get trainers' });
@@ -85,3 +85,13 @@ exports.deleteTrainer = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete trainer' });
   }
 };
+
+exports.getAttendence=async(req,res)=>{
+  try{
+    const attendance=await attendanceModel.findOne({trainerId:req.params.id})
+ res.status(200).json(attendance)
+}catch(e){
+  res.status(500).json(e)
+    console.log(e)
+  }
+}

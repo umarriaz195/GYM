@@ -62,53 +62,23 @@ const CustomCalendar = styled(Calendar)(({ theme }) => ({
   },
 }));
 
-const CalendarModal = ({ open, onClose }) => {
+const CalendarModal = ({ open, onClose,data }) => {
+  const attend=data
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [trainerData] = useState([
-    {
-      date: new Date(2023, 4, 12),
-      present: true,
-      checkInTime: '10:00 AM',
-      checkOutTime: '5:00 PM',
-    },
-    {
-      date: new Date(2023, 4, 16),
-      present: false,
-      checkInTime: '',
-      checkOutTime: '',
-    },
-    {
-      date: new Date(2023, 4, 1),
-      present: true,
-      checkInTime: '9:00 AM',
-      checkOutTime: '6:00 PM',
-    },
-    {
-      date: new Date(2023, 4, 3),
-      present: false,
-      checkInTime: '',
-      checkOutTime: '',
-    },
-    {
-      date: new Date(2023, 4, 2),
-      present: true,
-      checkInTime: '8:00 AM',
-      checkOutTime: '4:00 PM',
-    },
-    {
-      date: new Date(2023, 4, 7),
-      present: false,
-      checkInTime: '',
-      checkOutTime: '',
-    },
-    {
-      date: new Date(2023, 4, 22),
-      present: true,
-      checkInTime: '9:30 AM',
-      checkOutTime: '5:30 PM',
-    },
-    // Add more data for different dates here
-  ]);
+  const trainerData = [ ];
+  for(const x of attend.attendance){
+    const timeCheckIn=new Date(x.checkInTime)
+    const timeCheckOut=new Date(x.checkOutTime)
+  
+    console.log('attendece',timeCheckIn.getDate())
+   trainerData.push( {
+    date: new Date(timeCheckIn.getFullYear(), timeCheckIn.getMonth(), timeCheckIn.getDate()),
+    present: true,
+    checkInTime: timeCheckIn.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+    checkOutTime: timeCheckOut.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  })
+  }
+// console.log('trainers DATA')
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -119,14 +89,9 @@ const CalendarModal = ({ open, onClose }) => {
     // Perform form submission logic here
   };
 
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
-  };
 
-  const handleClose = () => {
-    setSelectedDate(null);
-    onClose();
-  };
+
+
 
   const [showDetail, setShowDetail] = useState(false);
 
@@ -194,9 +159,9 @@ const CalendarModal = ({ open, onClose }) => {
 
               }}
             >
-              <p style={{ fontSize: '1.3rem' }}>{selectedDate.toDateString()}</p>
-              <div >Check-in Time: {selectedDate.checkInTime || 'N/A'}</div>
-              <div>Check-out Time: {selectedDate.checkOutTime || 'N/A'}</div>
+              <p style={{ fontSize: '1.3rem' }}>{trainerData.selectedDate}</p>
+              <div >Check-in Time: {trainerData.selectedDate.checkInTime || 'N/A'}</div>
+              <div>Check-out Time: {trainerData.selectedDate.checkOutTime || 'N/A'}</div>
             </div>
           )}
           <DialogActions>

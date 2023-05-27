@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@mui/styles';
 import Sidebar from 'renderer/Components/Sidebar';
 import Navbar from 'renderer/Components/Navbar';
-import MessagePage from 'renderer/Components/MessagePage';
+import MessagePage from 'renderer/Components/messagePage/MessagePage';
 
 
 const Message = () => {

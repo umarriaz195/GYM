@@ -13,4 +13,6 @@ router.put('/:id', trainerController.updateTrainer);
 
 router.delete('/:id', trainerController.deleteTrainer);
 
+router.get('/attendence/:id',trainerController.getAttendence)
+
 module.exports = router;

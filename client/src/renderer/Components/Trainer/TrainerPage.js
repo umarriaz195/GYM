@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import CalendarModal from 'renderer/Common/Calendar/Calendar';
 import Modal from './TrainerModals/TrainerModal';
+import axios from 'axios';
 import EventIcon from '@mui/icons-material/Event';
 import { IconButton } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
@@ -21,99 +22,31 @@ import TrainerViewModal from './TrainerModals/TrainerViewModal';
 
 const TrainerPage = () => {
   // Trainers data array
-  const trainerss = [
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    {
-      name: 'John Doe',
-      date: '2023-05-23',
-      time: '10:00 AM',
-    },
-    {
-      name: 'Jane Smith',
-      date: '2023-05-24',
-      time: '2:30 PM',
-    },
-    // Add more trainers data objects as needed
-  ];
+
+  const [data, setData] = useState([]);
+const [attendance, setAttendance] = useState([]);
+const [id,setId]=useState(null)
+const fetchTrainersData = async () => {
+  try {
+    const trainersResponse = await axios.get('http://localhost:7000/trainers/');
+    const trainers = trainersResponse.data;
+
+    const trainersDataPromises = trainers.map(async (trainer) => {
+      const attendanceResponse = await axios.get(`http://localhost:7000/trainers/attendence/${trainer._id}`);
+      return { ...trainer, attendance: attendanceResponse.data };
+    });
+
+    const trainersData = await Promise.all(trainersDataPromises);
+    setData(trainersData);
+    console.log('data',data)
+  } catch (error) {
+    console.error('Error fetching trainers data:', error);
+  }
+};
+
+fetchTrainersData();
+
+  // const trainerss = 
 
   const classes = {
     container: {
@@ -279,9 +212,10 @@ const TrainerPage = () => {
 
   // VIEW BUTTON MODAL
 
-  const handleViewModalOpen = (trainer) => {
-    setSelectedTrainer(trainer);
+  const handleViewModalOpen = () => {
+    setSelectedTrainer();
     setViewModalOpen(true);
+    
   };
 
   const handleViewModalClose = () => {
@@ -290,13 +224,15 @@ const TrainerPage = () => {
   };
 
   // Render the trainers' data and an "View" button for each trainer
-  const renderTrainers = () => {
+  const renderTrainers = (trainers) => {
+
     return trainers.map((trainer) => (
+      
       <div key={trainer.id}>
         <span>{trainer.name}</span>
         <span>{trainer.email}</span>
         <span>{trainer.contact}</span>
-        <button onClick={() => handleModalOpen(trainer)}>View</button>
+        <button onClick={() => handleViewModalOpen()}>View</button>
       </div>
     ));
   };
@@ -389,38 +325,39 @@ const TrainerPage = () => {
         <div style={classes.trainersListContainer}>
           <CustomScrollbarStyle />
           {/* Trainers list */}
-          {trainerss.map((trainers, index) => (
-            <div key={index} style={classes.trainersRow}>
+          {data.map((trainers, index) => (
+            <div key={trainers._id} style={classes.trainersRow}>
+              
               <div>{trainers.name}</div>
-              <div>{trainers.date}</div>
-              <div>{trainers.time}</div>
+          
               <div style={classes.trainersButtons}>
-                <button
+                {/* <button
                   style={classes.viewButton}
-                  onClick={handleViewModalOpen}
+                  onClick={()=>{handleViewModalOpen()}}//renderTrainers(trainers)
                 >
                   View
-                </button>
+                </button> */}
                 <TrainerViewModal
                   open={viewModalOpen}
                   onClose={handleViewModalClose}
-                  trainer={selectedTrainer}
+                  key={trainers._id} trainer={trainers} 
                 />
-                <button
+                {/* <button
                   style={classes.editButton}
                   onClick={handleEditButtonClick}
-                >
+                >{console.log('qaaaaaaaaaaaaaaaaaaaaaaaaa',trainers)}
                   Edit
-                </button>
+                </button> */}
                 <TrainerEditModal
                   open={editModalOpen}
                   onClose={handleEditModalClose}
-                  // trainer={}
+                  trainer={trainers}
                 />
                 <button style={classes.removeButton}>Remove</button>
                 <div>
                   <IconButton
                     onClick={handleOpenCalendarModal}
+                    // value={trainers.attendance}
                     style={{
                       backgroundColor: 'green',
                       color: 'white',
@@ -433,6 +370,7 @@ const TrainerPage = () => {
                   <CalendarModal
                     open={openCalendarModal}
                     onClose={handleCloseCalendarModal}
+                    data={trainers.attendance}
                   />
                 </div>
               </div>

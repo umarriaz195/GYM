@@ -8,20 +8,39 @@ import {
   TextField,
   styled,
 } from '@mui/material';
+import axios from 'axios';
 
 const ModalContent = styled(DialogContent)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   padding: '10px',
-  width: '400px'
+  width: '400px',
 }));
 
-const TrainerEditModal = ({ open, onClose, trainer }) => {
-  const [name, setName] = useState(trainer?.name || '');
-  const [email, setEmail] = useState(trainer?.email || '');
-  const [contact, setContact] = useState(trainer?.contact || '');
-  const [salary, setSalary] = useState(trainer?.salary || '');
+const TrainerEditModal = ({  trainer }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [salary, setSalary] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  // Update state values when the trainer prop changes
+  React.useEffect(() => {
+    if (open && trainer) {
+      // setName(trainer.name || '');
+      // setEmail(trainer.email || '');
+      // setPhone(trainer.phone || '');
+      // setSalary(trainer.salary || '');
+    }
+  }, [open, trainer]);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -31,27 +50,38 @@ const TrainerEditModal = ({ open, onClose, trainer }) => {
     setEmail(event.target.value);
   };
 
-  const handleContactChange = (event) => {
-    setContact(event.target.value);
+  const handlePhoneChange = (event) => {
+    setPhone(event.target.value);
   };
 
   const handleSalaryChange = (event) => {
     setSalary(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Perform form submission logic here
-    // You can access the updated trainer data in the state variables (name, email, contact, salary)
+const payload={        name: name,
+  email: email,
+  phone: phone,
+  salary: salary,}
+  console.log('payloadddddddddddddddddddddd',payload)
+    try {
+      await axios.put(`http://localhost:7000/trainers/${trainer._id}`, payload);
+      // Perform any additional logic after successful update
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleClose = () => {
-    onClose();
-  };
+  // const handleClose = () => {
+  //   onClose();
+  // };
 
   return (
-    <Dialog open={open} onClose={onClose}>
-    <DialogTitle>Edit Trainer Profile</DialogTitle>
+    <>
+    <Button style={classes.editButton} onClick={handleOpen}>Edit</Button>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Edit Trainer Profile</DialogTitle>
       <form onSubmit={handleSubmit}>
         <ModalContent>
           <TextField
@@ -60,7 +90,6 @@ const TrainerEditModal = ({ open, onClose, trainer }) => {
             onChange={handleNameChange}
             variant="outlined"
             fullWidth
-            required
             margin="normal"
           />
           <TextField
@@ -69,16 +98,14 @@ const TrainerEditModal = ({ open, onClose, trainer }) => {
             onChange={handleEmailChange}
             variant="outlined"
             fullWidth
-            required
             margin="normal"
           />
           <TextField
-            label="Contact"
-            value={contact}
-            onChange={handleContactChange}
+            label="Phone"
+            value={phone}
+            onChange={handlePhoneChange}
             variant="outlined"
             fullWidth
-            required
             margin="normal"
           />
           <TextField
@@ -87,7 +114,6 @@ const TrainerEditModal = ({ open, onClose, trainer }) => {
             onChange={handleSalaryChange}
             variant="outlined"
             fullWidth
-            required
             margin="normal"
           />
           <DialogActions>
@@ -101,7 +127,20 @@ const TrainerEditModal = ({ open, onClose, trainer }) => {
         </ModalContent>
       </form>
     </Dialog>
+    </>
   );
 };
 
 export default TrainerEditModal;
+
+const classes={
+  editButton: {
+    padding: '4px 8px',
+    background: '#ffaa00',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    transition: 'background 0.3s ease',
+  },
+}

@@ -7,7 +7,7 @@ const Account = require('../Models/accounts');
 
 const twilio = require('twilio');
 const Trainer = require('../Models/trainer');
-
+require('dotenv').config()
 
 //
 // exports.sendmessage = async (req, res) => {
@@ -98,22 +98,22 @@ exports.sendmessage = async (req, res) => {
 
     // Fetch phone numbers from the specified recipients
     let phoneNumbers = [];
-    for (const recipient of recipients) {
-      if (recipient.collection === 'trainers') {
+   
+      if (recipients === 'trainers') {
         const trainers = await Trainer.find({}, 'phone');
         phoneNumbers.push(...trainers.map(({ phone }) => phone));
-      } else if (recipient.collection === 'members') {
+      } else if (recipients === 'members') {
         const members = await Member.find({}, 'phone');
         phoneNumbers.push(...members.map(({ phone }) => phone));
-      } else if (recipient.collection === 'specificMember') {
-        const member = await Member.findById(recipient.id, 'phone');
+      } else if (recipients === 'specificMember') {
+        const member = await Member.findById(recipients.id, 'phone');
         if (member) {
           phoneNumbers.push(member.phone);
         } else {
           throw new Error('Member not found');
         }
-      } else if (recipient.collection === 'specificTrainer') {
-        const trainer = await Trainer.findById(recipient.id, 'phone');
+      } else if (recipients === 'specificTrainer') {
+        const trainer = await Trainer.findById(recipients.id, 'phone');
         if (trainer) {
           phoneNumbers.push(trainer.phone);
         } else {
@@ -122,7 +122,7 @@ exports.sendmessage = async (req, res) => {
       } else {
         throw new Error('Invalid collection');
       }
-    }
+
 
     // Call the sendSMS function to send the SMS messages
     await sendSMS(message, phoneNumbers);
