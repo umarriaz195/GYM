@@ -29,31 +29,32 @@ import { scrollbarStyle } from 'renderer/Common/scrollbarStyle';
 
 const DashboardPage = () => {
   const classes = useStyles();
-const [balance,setBalance]=useState(null)
-const [profit,setProfit]=useState(null)
-const [loss,setLoss]=useState(null)
-const [users,setUsers]=useState(0)
-const [creditRecord,setCreditRecord]=useState([])
-const [debitRecord,setDebitRecord]=useState([])
+  const [balance, setBalance] = useState(null)
+  const [profit, setProfit] = useState(null)
+  const [loss, setLoss] = useState(null)
+  const [users, setUsers] = useState(0)
+  const [creditRecord, setCreditRecord] = useState([])
+  const [debitRecord, setDebitRecord] = useState([])
+  const [monthlyRecord, setMonthlyRecord] = useState([])
+  const [yearlyRecord, setYearlyRecord] = useState([])
+  // const [,setBalance]=useState(null)
 
-
-// const [,setBalance]=useState(null)
-
-  const result=async()=>{
-    try{
-    const response=await  axios.get('http://localhost:7000/owner/dashboard')
-    const data=response.data
-    console.log(data)
-    setBalance(data.balance)
-    data.profit>0?setProfit(data.profit):setLoss(data.loss)
-    setUsers(data.users)
-    setCreditRecord(data.creditRecord)
-    setDebitRecord(data.debitRecord)
-
-    }catch(e){
-console.log('an error occurs',e)
+  const result = async () => {
+    try {
+      const response = await axios.get('http://localhost:7000/owner/dashboard')
+      const data = response.data
+      console.log(data)
+      setBalance(data.balance)
+      data.profit > 0 ? setProfit(data.profit) : setLoss(data.loss)
+      setUsers(data.users)
+      setCreditRecord(data.creditRecord)
+      setDebitRecord(data.debitRecord)
+      setMonthlyRecord(data.monthlyDetails)
+      setYearlyRecord(data.yearlyDetails)
+    } catch (e) {
+      console.log('an error occurs', e)
     }
-  
+
   }
   result()
   // Apply the custom scrollbar style
@@ -100,7 +101,7 @@ console.log('an error occurs',e)
               </Typography>
               <div className={classes.arrowContainer}>
                 <ArrowUpwardIcon />
-                <Typography variant="subtitle2">{profit?`${profit}%`:`${loss}%`}</Typography>
+                <Typography variant="subtitle2">{profit ? `${profit}%` : `${loss}%`}</Typography>
                 <Typography
                   variant="subtitle2"
                   style={{ marginLeft: '20px', color: 'gray' }}
@@ -236,7 +237,7 @@ console.log('an error occurs',e)
 
         <div className={classes.graphContainer}>
           <div className={classes.graphSection1}>
-            <MainGraph />
+            <MainGraph data={monthlyRecord}/>
           </div>
           <div className={classes.graphSection2}>
             <SideGraph />
@@ -280,7 +281,7 @@ console.log('an error occurs',e)
                 borderRadius: '15px',
                 overflow: 'auto',
                 backgroundColor: 'white',
-                border:'1px solid #bdbdbd',
+                border: '1px solid #bdbdbd',
               }}
             >
               <div style={{ margin: 'auto', maxWidth: '700px' }}>
@@ -336,7 +337,7 @@ console.log('an error occurs',e)
                 borderRadius: '15px',
                 overflow: 'auto',
                 backgroundColor: 'white',
-                border:'1px solid #bdbdbd',
+                border: '1px solid #bdbdbd',
               }}
             >
               <div style={{ margin: 'auto', maxWidth: '700px' }}>
