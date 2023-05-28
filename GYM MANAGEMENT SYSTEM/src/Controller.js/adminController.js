@@ -74,7 +74,7 @@ exports.sendmessage = async (req, res) => {
     const authToken = process.env.TWILIO_AUTH_TOKEN;
 
     // Create a new Twilio client
-    const client = twilio(accountSid, authToken);
+     const client = twilio(accountSid, authToken);
 
     // Function to send SMS to the given recipients
     async function sendSMS(message, phoneNumbers) {
