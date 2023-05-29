@@ -8,6 +8,7 @@ import {
   Typography,
   styled,
 } from '@mui/material';
+import axios from 'axios';
 
 const ModalContent = styled(DialogContent)(({ theme }) => ({
   display: 'flex',
@@ -31,13 +32,19 @@ const TrainerViewModal = ({ trainer }) => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
 
-const handlePaySalary = () => {
+  const handlePaySalary = async (id) => {
     // Perform logic to pay salary here
     setConfirmModalOpen(false);
+    try {
+      const response = await axios.put(`http://localhost:7000/admin/pay/${id}`)
+      console.log('salary paidd', response)
+    } catch (e) {
+      console.log(e)
+    }
   };
 
 
-const handleConfirm = () => {
+  const handleConfirm = () => {
     setConfirmModalOpen(true);
   };
 
@@ -66,42 +73,42 @@ const handleConfirm = () => {
             <strong>Date Joined:</strong> {trainer.picture}
           </Typography>
           <div style={{ display: 'flex' }}>
-          <DialogActions style={{ marginLeft: '140px', backgroundColor: 'orange', borderRadius: '5px' }}>
-            <Button onClick={handleClose} style={{ color: 'white' }}>
-              Close
-            </Button>
-          </DialogActions>
+            <DialogActions style={{ marginLeft: '140px', backgroundColor: 'orange', borderRadius: '5px' }}>
+              <Button onClick={handleClose} style={{ color: 'white' }}>
+                Close
+              </Button>
+            </DialogActions>
             <DialogActions style={{ backgroundColor: '#0d1a52', borderRadius: '5px', marginLeft: '5px' }}>
               <Button onClick={handleConfirm} style={{ color: 'white' }}>
                 Pay Salary
               </Button>
             </DialogActions>
-        </div>
+          </div>
         </ModalContent>
         {/* Confirmation Modal */}
-      <Dialog open={confirmModalOpen} onClose={handleCancel}>
-        <DialogTitle>Confirmation</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            Are you sure you want to pay the salary for {trainer?.name}?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} style={{ color: 'red' }}>
-            Cancel
-          </Button>
-          <Button onClick={handlePaySalary} style={{ color: 'green' }}>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Dialog open={confirmModalOpen} onClose={handleCancel}>
+          <DialogTitle>Confirmation</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1" gutterBottom>
+              Are you sure you want to pay the salary for {trainer?.name}?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancel} style={{ color: 'red' }}>
+              Cancel
+            </Button>
+            <Button onClick={() => handlePaySalary(trainer._id)} style={{ color: 'green' }}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Dialog>
     </>
   );
 };
 
 export default TrainerViewModal;
-const classes={
+const classes = {
   viewButton: {
     padding: '4px 8px',
     background: '#00aaff',

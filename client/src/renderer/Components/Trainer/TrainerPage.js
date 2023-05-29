@@ -25,29 +25,35 @@ const TrainerPage = () => {
   // Trainers data array
 
   const [data, setData] = useState([]);
-const [attendance, setAttendance] = useState([]);
-const [id,setId]=useState(null)
-const fetchTrainersData = async () => {
-  try {
-    const trainersResponse = await axios.get('http://localhost:7000/trainers/');
-    const trainers = trainersResponse.data;
+  const [searchQuery, setSearchQuery] = useState('');
+  const [attendance, setAttendance] = useState([]);
+  const [id, setId] = useState(null);
 
-    const trainersDataPromises = trainers.map(async (trainer) => {
-      const attendanceResponse = await axios.get(`http://localhost:7000/trainers/attendence/${trainer._id}`);
-      return { ...trainer, attendance: attendanceResponse.data };
-    });
+  const fetchTrainersData = async () => {
+    try {
+      const trainersResponse = await axios.get(
+        'http://localhost:7000/trainers/'
+      );
+      const trainers = trainersResponse.data;
 
-    const trainersData = await Promise.all(trainersDataPromises);
-    setData(trainersData);
-    console.log('data',data)
-  } catch (error) {
-    console.error('Error fetching trainers data:', error);
-  }
-};
+      const trainersDataPromises = trainers.map(async (trainer) => {
+        const attendanceResponse = await axios.get(
+          `http://localhost:7000/trainers/attendence/${trainer._id}`
+        );
+        return { ...trainer, attendance: attendanceResponse.data };
+      });
 
-fetchTrainersData();
+      const trainersData = await Promise.all(trainersDataPromises);
+      setData(trainersData);
+      console.log('data', data);
+    } catch (error) {
+      console.error('Error fetching trainers data:', error);
+    }
+  };
 
-  // const trainerss = 
+  fetchTrainersData();
+
+  // const trainerss =
 
   const classes = {
     container: {
@@ -56,7 +62,7 @@ fetchTrainersData();
       display: 'flex',
       flexDirection: 'column',
       padding: '24px',
-      marginTop: '40px',
+      marginTop: '60px',
     },
     card: {
       flex: '1',
@@ -172,15 +178,37 @@ fetchTrainersData();
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [salaryModalOpen, setSalaryModalOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
 
   // OPTIONSS
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
-
+  const deleteTranier = async (id) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:7000/trainers/${id}`
+      );
+      console.log(`user deleted`, response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+
+  const handleSearchInputChange = (event) => {
+    const inputValue = event.target.value;
+    setSearchInput(inputValue);
+  
+    const filteredTrainers = data.filter((trainer) =>
+      trainer.name.toLowerCase().includes(inputValue.toLowerCase())
+    );
+    setFilteredData(filteredTrainers);
+  };
+  
 
   // TRAINER MODAL
 
@@ -217,14 +245,12 @@ fetchTrainersData();
   const handleViewModalOpen = () => {
     setSelectedTrainer();
     setViewModalOpen(true);
-    
   };
 
   const handleViewModalClose = () => {
     setViewModalOpen(false);
     setSelectedTrainer(null);
   };
-
 
   const handleSalaryModalOpen = () => {
     setSalaryModalOpen(true);
@@ -236,9 +262,7 @@ fetchTrainersData();
 
   // Render the trainers' data and an "View" button for each trainer
   const renderTrainers = (trainers) => {
-
     return trainers.map((trainer) => (
-      
       <div key={trainer.id}>
         <span>{trainer.name}</span>
         <span>{trainer.email}</span>
@@ -257,6 +281,8 @@ fetchTrainersData();
             variant="outlined"
             size="small"
             placeholder="Search"
+            value={searchInput}
+            onChange={handleSearchInputChange}
           />
           <SearchIcon />
         </div>
@@ -298,44 +324,11 @@ fetchTrainersData();
             </Button>
 
             {/* Modal component */}
-            <SalaryModal open={salaryModalOpen} onClose={handleSalaryModalClose} />
+            <SalaryModal
+              open={salaryModalOpen}
+              onClose={handleSalaryModalClose}
+            />
           </div>
-
-          {/* Dropdown filter */}
-          <FormControl
-            variant="outlined"
-            style={{
-              marginBottom: '16px',
-              minWidth: '200px',
-              backgroundColor: 'white',
-              borderRadius: '20px',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              width: '80px',
-            }}
-          >
-            <InputLabel style={{ marginLeft: '8px' }}>
-              Filter Trainers
-            </InputLabel>
-            <Select
-              value={selectedOption}
-              onChange={handleOptionChange}
-              label="Select Option"
-              style={{
-                paddingLeft: '8px',
-                fontFamily: 'sans-serif',
-                fontWeight: 'bold',
-                borderRadius: '20px',
-              }}
-            >
-              <MenuItem value="option1" selected>
-                All
-              </MenuItem>
-              <MenuItem value="option2">Active Trainers</MenuItem>
-              <MenuItem value="option3">Inactive Trainers</MenuItem>
-              <MenuItem value="option4">Men</MenuItem>
-              <MenuItem value="option5">Women</MenuItem>
-            </Select>
-          </FormControl>
         </div>
       </div>
       <div>
@@ -349,9 +342,9 @@ fetchTrainersData();
           }}
         >
           <h4 style={{ flex: 1, marginLeft: '30px' }}>NAME</h4>
-          <h4 style={{ flex: 1 }}>DATE</h4>
-          <h4 style={{ flex: 1 }}>TIME</h4>
-          <h4 style={{ flex: 1, marginRight: '-80px' }}>SELECT AN ACTION</h4>
+          <h4 style={{ flex: 1, textAlign: 'right', marginRight: '80px' }}>
+            SELECT AN ACTION
+          </h4>
         </div>
 
         <div style={classes.trainersListContainer}>
@@ -359,9 +352,8 @@ fetchTrainersData();
           {/* Trainers list */}
           {data.map((trainers, index) => (
             <div key={trainers._id} style={classes.trainersRow}>
-              
               <div>{trainers.name}</div>
-          
+
               <div style={classes.trainersButtons}>
                 {/* <button
                   style={classes.viewButton}
@@ -372,7 +364,8 @@ fetchTrainersData();
                 <TrainerViewModal
                   open={viewModalOpen}
                   onClose={handleViewModalClose}
-                  key={trainers._id} trainer={trainers} 
+                  key={trainers._id}
+                  trainer={trainers}
                 />
                 {/* <button
                   style={classes.editButton}
@@ -385,7 +378,12 @@ fetchTrainersData();
                   onClose={handleEditModalClose}
                   trainer={trainers}
                 />
-                <button style={classes.removeButton}>Remove</button>
+                <button
+                  onClick={() => deleteTranier(trainers._id)}
+                  style={classes.removeButton}
+                >
+                  Remove
+                </button>
                 <div>
                   <IconButton
                     onClick={handleOpenCalendarModal}

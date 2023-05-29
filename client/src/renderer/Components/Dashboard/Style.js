@@ -70,11 +70,13 @@ import { makeStyles } from '@mui/styles';
     marginLeft: '20px',
     width: '150px',
   },
+
+  // FIRST CARD ICON
   coinIconContainer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginLeft: '80px',
+    marginLeft: '85px',
   },
   coinIcon: {
     color: '#fff',
@@ -88,28 +90,13 @@ import { makeStyles } from '@mui/styles';
     justifyContent: 'center',
     marginLeft: '10px'
   },
-  profitCoinIconContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    marginLeft: '90px',
-  },
-  profitCoinIcon: {
-    color: '#fff',
-    fontSize: '48px',
-    borderRadius: '50%',
-    width: '60px',
-    height: '60px',
-    backgroundColor: 'blue',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
+  // SECOND CARD ICON
   contactIconContainer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginLeft: '60px',
+    marginLeft: '70px',
     marginTop: '-',
   },
   contactIcon: {
@@ -123,11 +110,14 @@ import { makeStyles } from '@mui/styles';
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  // THIRD CARD ICON
+
   taskProgressIconContainer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginLeft: '60px',
+    marginLeft: '100px',
   },
   taskProgressIcon: {
     color: '#fff',
@@ -140,6 +130,29 @@ import { makeStyles } from '@mui/styles';
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  // FOURTH CARD ICON
+
+  profitCoinIconContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginLeft: '110px',
+  },
+  profitCoinIcon: {
+    color: '#fff',
+    fontSize: '48px',
+    borderRadius: '50%',
+    width: '60px',
+    height: '60px',
+    backgroundColor: 'blue',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+   // GRAPH CONTENT
+
   graphContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -149,11 +162,18 @@ import { makeStyles } from '@mui/styles';
     backgroundColor: '#f5f5f5',
     justifyContent: 'space-between',
   },
+
+
+   // FIRST GRAPH
+
   graphSection1: {
     flex: '70%',
     background: '#fafafa',
     paddingRight: '5px'
   },
+
+   // SECOND GRAPH
+
   graphSection2: {
     flex: '30%',
   },

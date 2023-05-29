@@ -80,6 +80,8 @@ const payload={
   balance:account.balance,
   creditRecord:credits,
   debitRecord:debits,
+  creditAmount:account.credit,
+  debitAmount:account.debit,
   status:account.status,
   profitAmount:account.profitAmount,
   lossAmount:account.lossAmount,

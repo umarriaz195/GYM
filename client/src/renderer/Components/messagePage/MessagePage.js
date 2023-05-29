@@ -14,7 +14,7 @@ const [message,setMessage]=useState('')
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', marginTop: '50px', alignItems: 'center' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', marginTop: '70px', alignItems: 'center' }}>
       <div style={{ display: 'flex', marginBottom: '10px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', width: '400px' }}>
         <Typography style={{ fontSize: '2rem', fontWeight: 'bolder', marginLeft: '60px' }} >SEND MESSAGE</Typography>
