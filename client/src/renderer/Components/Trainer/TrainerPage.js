@@ -19,6 +19,7 @@ import { IconButton } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import TrainerEditModal from './TrainerModals/TrainerEditModal';
 import TrainerViewModal from './TrainerModals/TrainerViewModal';
+import SalaryModal from './TrainerModals/SalaryModal';
 
 const TrainerPage = () => {
   // Trainers data array
@@ -169,6 +170,7 @@ fetchTrainersData();
   const [openCalendarModal, setOpenCalendarModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [salaryModalOpen, setSalaryModalOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
 
   // OPTIONSS
@@ -223,6 +225,15 @@ fetchTrainersData();
     setSelectedTrainer(null);
   };
 
+
+  const handleSalaryModalOpen = () => {
+    setSalaryModalOpen(true);
+  };
+
+  const handleSalaryModalClose = () => {
+    setSalaryModalOpen(false);
+  };
+
   // Render the trainers' data and an "View" button for each trainer
   const renderTrainers = (trainers) => {
 
@@ -269,6 +280,27 @@ fetchTrainersData();
             {/* Modal component */}
             <Modal open={openTrainerModal} onClose={handleCloseTrainerModal} />
           </div>
+
+          <div>
+            {/* Button to open the modal */}
+            <Button
+              onClick={handleSalaryModalOpen}
+              style={{
+                marginTop: '4px',
+                backgroundColor: '#8ec904',
+                color: 'white',
+                borderRadius: '10px',
+                marginRight: '30px',
+                height: '50px',
+              }}
+            >
+              Salary Status
+            </Button>
+
+            {/* Modal component */}
+            <SalaryModal open={salaryModalOpen} onClose={handleSalaryModalClose} />
+          </div>
+
           {/* Dropdown filter */}
           <FormControl
             variant="outlined"
