@@ -3,10 +3,13 @@ import { Grid, Paper, Typography, TextField, Button, Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import FitnessLogo from '../Assets/fitnesslogo.png';
 import RegisterModal from './RegisterModal';
+import axios from 'axios';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const gotoDashboard = () => {
     navigate('/dashboard');
@@ -20,6 +23,25 @@ const LoginPage = () => {
     setRegisterModalOpen(false);
   };
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const response = await axios.post('http://localhost:7000/admin/login', { email, password });
+      const { token } = response.data;
+      // Store the token in localStorage or a state variable for future requests
+      // For example:
+      localStorage.setItem('token', token);
+  
+      // Redirect the user to the dashboard or perform any other necessary actions
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error logging in:', error.message);
+      // Handle the error, display an error message, etc.
+    }
+  };
+  
+  
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <Grid container>
@@ -35,9 +57,9 @@ const LoginPage = () => {
               </Link>
             </Typography>
             <form>
-              <TextField label="Email" variant="outlined" fullWidth margin="normal" />
-              <TextField label="Password" type="password" variant="outlined" fullWidth margin="normal" />
-              <Button variant="contained" fullWidth sx={{ marginTop: '1rem', height: '50px', borderRadius: '10px' }} onClick={gotoDashboard}>
+              <TextField label="Email" variant="outlined" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <TextField label="Password" type="password" variant="outlined" fullWidth margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Button variant="contained" fullWidth sx={{ marginTop: '1rem', height: '50px', borderRadius: '10px' }} onClick={handleLogin}>
                 Login
               </Button>
             </form>

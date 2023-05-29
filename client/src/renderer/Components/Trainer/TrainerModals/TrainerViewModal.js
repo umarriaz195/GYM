@@ -28,6 +28,22 @@ const TrainerViewModal = ({ trainer }) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+
+
+const handlePaySalary = () => {
+    // Perform logic to pay salary here
+    setConfirmModalOpen(false);
+  };
+
+
+const handleConfirm = () => {
+    setConfirmModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setConfirmModalOpen(false);
+  };
 
   return (
     <>
@@ -49,12 +65,36 @@ const TrainerViewModal = ({ trainer }) => {
           <Typography variant="body1" component="div" gutterBottom>
             <strong>Date Joined:</strong> {trainer.picture}
           </Typography>
+          <div style={{ display: 'flex' }}>
           <DialogActions style={{ marginLeft: '140px', backgroundColor: 'orange', borderRadius: '5px' }}>
             <Button onClick={handleClose} style={{ color: 'white' }}>
               Close
             </Button>
           </DialogActions>
+            <DialogActions style={{ backgroundColor: '#0d1a52', borderRadius: '5px', marginLeft: '5px' }}>
+              <Button onClick={handleConfirm} style={{ color: 'white' }}>
+                Pay Salary
+              </Button>
+            </DialogActions>
+        </div>
         </ModalContent>
+        {/* Confirmation Modal */}
+      <Dialog open={confirmModalOpen} onClose={handleCancel}>
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            Are you sure you want to pay the salary for {trainer?.name}?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} style={{ color: 'red' }}>
+            Cancel
+          </Button>
+          <Button onClick={handlePaySalary} style={{ color: 'green' }}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
       </Dialog>
     </>
   );

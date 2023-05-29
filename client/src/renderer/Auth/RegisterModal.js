@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Typography, TextField, Button } from '@mui/material';
+import axios from 'axios';
 
 const RegisterModal = ({ open, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    contact: '',
+    contactNo: '',
   });
 
   const handleInputChange = (e) => {
@@ -17,9 +18,29 @@ const RegisterModal = ({ open, onClose }) => {
     }));
   };
 
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Perform form submission logic here
+
+    try {
+      const response = await axios.post('http://localhost:7000/admin/register', formData);
+      // Handle the response as needed
+      console.log(response.data);
+
+      // Clear the form
+      setFormData({
+        name: '',
+        email: '',
+        password: '',
+        contactNo: '',
+      });
+
+      // Close the modal
+      onClose();
+    } catch (error) {
+      console.error('Error creating admin:', error.message);
+      // Handle the error, display an error message, etc.
+    }
   };
 
   const handleBackdropClick = (event) => {
@@ -61,7 +82,7 @@ const RegisterModal = ({ open, onClose }) => {
           Register
         </Typography>
         <form onSubmit={handleSubmit}>
-        <TextField
+          <TextField
             label="Name"
             type="name"
             variant="outlined"
@@ -92,12 +113,12 @@ const RegisterModal = ({ open, onClose }) => {
           />
           <TextField
             label="Contact"
-            type="contact"
+            type="contactNo"
             variant="outlined"
             fullWidth
             margin="normal"
-            name="contact"
-            value={formData.contact}
+            name="contactNo"
+            value={formData.contactNo}
             onChange={handleInputChange}
           />
           <Button variant="contained" fullWidth sx={{ marginTop: '1rem', height: '50px', borderRadius: '10px' }} type="submit">
