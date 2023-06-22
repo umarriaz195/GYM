@@ -20,7 +20,7 @@ const UserPage = () => {
   const [selectedOption, setSelectedOption] = useState('');
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [feesModalOpen, setFeesModalOpen] = useState(false); 
+  const [feesModalOpen, setFeesModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   const [filteredMembers, setFilteredMembers] = useState([]);
 
@@ -52,12 +52,14 @@ const UserPage = () => {
 
   const deleteMember = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:7000/member/delete/${id}`)
-      console.log(`user deleted`, response.data)
+      const response = await axios.delete(
+        `http://localhost:7000/member/delete/${id}`
+      );
+      console.log(`user deleted`, response.data);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }
+  };
 
   const handleOptionChange = (event) => {
     const selectedValue = event.target.value;
@@ -66,10 +68,14 @@ const UserPage = () => {
     if (selectedValue === '') {
       setFilteredMembers(members);
     } else if (selectedValue === 'option1') {
-      const activeMembers = members.filter((member) => member.status === 'Active');
+      const activeMembers = members.filter(
+        (member) => member.status === 'Active'
+      );
       setFilteredMembers(activeMembers);
     } else if (selectedValue === 'option2') {
-      const inactiveMembers = members.filter((member) => member.status === 'Inactive');
+      const inactiveMembers = members.filter(
+        (member) => member.status === 'Inactive'
+      );
       setFilteredMembers(inactiveMembers);
     }
   };
@@ -200,65 +206,67 @@ const UserPage = () => {
         </div>
       </div>
       <div>
-      <h2>Members List</h2>
-<div
-  style={{
-    display: 'flex',
-    flexDirection: 'row',
-    width: '1020px',
-    justifyContent: 'space-between',
-  }}
->
-  <h4 style={{ flex: 1, marginLeft: '30px' }}>NAME</h4>
-  <h4 style={{ position: 'absolute', top: '240px', right: '750px' }}>STATUS</h4>
-  <h4 style={{ position: 'absolute', top: '240px', right: '130px' }}>SELECT AN ACTION</h4>
-</div>
-<div style={classes.userListContainer}>
-  <style dangerouslySetInnerHTML={{ __html: scrollbarStyle }} />
-  {filteredMembers.map((member) => (
-    <div key={member._id} style={classes.userRow}>
-      <div>{member.name}</div>
-      <div style={{ color: member.isActive ? 'green' : 'red' }}>
+        <h2>Members List</h2>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            width: '1020px',
+            justifyContent: 'space-between',
+          }}
+        >
+          <h4 style={{ flex: 1, marginLeft: '30px' }}>NAME</h4>
+          <h4 style={{ position: 'absolute', top: '240px', right: '750px' }}>
+            STATUS
+          </h4>
+          <h4 style={{ position: 'absolute', top: '240px', right: '130px' }}>
+            SELECT AN ACTION
+          </h4>
+        </div>
+        <div style={classes.userListContainer}>
+          <style dangerouslySetInnerHTML={{ __html: scrollbarStyle }} />
+          {filteredMembers.map((member) => (
+            <div key={member._id} style={classes.userRow}>
+              <div>{member.name}</div>
+              <div style={{ color: member.isActive ? 'green' : 'red' }}>
                 {member.isActive ? 'Active' : 'Inactive'}
               </div>
-      <div style={classes.userButtons}>
-        <button
-          style={classes.viewButton}
-          onClick={() => handleViewModalOpen(member)}
-        >
-          View
-        </button>
-        <UserViewModal
-          open={viewModalOpen}
-          onClose={handleViewModalClose}
-          member={selectedMember}
-        />
-        {/* <button
+              <div style={classes.userButtons}>
+                <button
+                  style={classes.viewButton}
+                  onClick={() => handleViewModalOpen(member)}
+                >
+                  View
+                </button>
+                <UserViewModal
+                  open={viewModalOpen}
+                  onClose={handleViewModalClose}
+                  member={selectedMember}
+                />
+                {/* <button
           style={classes.editButton}
           onClick={() => handleEditButtonClick(member._id)}
         >
           Edit
         </button> */}
-        <UserEditModal
-          open={editModalOpen}
-          onClose={handleEditModalClose}
-          member={member}
-        />
-        <button
-          style={classes.removeButton}
-          onClick={() =>deleteMember(member._id)}
-        >
-          Remove
-        </button>
+                <UserEditModal
+                  open={editModalOpen}
+                  onClose={handleEditModalClose}
+                  member={member}
+                />
+                <button
+                  style={classes.removeButton}
+                  onClick={() => deleteMember(member._id)}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  ))}
-</div>
-</div>
-
     </div>
   );
 };
 
 export default UserPage;
-

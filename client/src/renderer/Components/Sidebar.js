@@ -4,6 +4,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import MessageIcon from '@mui/icons-material/Message';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Logo from '../Assets/Logo.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -63,6 +64,10 @@ const Sidebar = () => {
     navigate('/message');
   };
 
+  const gotoExpenses = () => {
+    navigate('/expenses');
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       <Drawer style={sidebarStyle} variant="permanent" PaperProps={{ style: sidebarStyle }}>
@@ -120,6 +125,19 @@ const Sidebar = () => {
               <MessageIcon />
             </ListItemIcon>
             <ListItemText primary={<Typography style={textStyle}>Message</Typography>} />
+          </ListItem>
+          <ListItem
+            button
+            style={{
+              ...listItemStyle,
+              backgroundColor: location.pathname === '/expenses' ? '#bdbdbd' : 'initial',
+            }}
+            onClick={gotoExpenses}
+          >
+            <ListItemIcon style={listItemIconStyle}>
+              <AccountBalanceWalletIcon />
+            </ListItemIcon>
+            <ListItemText primary={<Typography style={textStyle}>Expense</Typography>} />
           </ListItem>
         </List>
       </Drawer>

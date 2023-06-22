@@ -70,7 +70,7 @@ const Modal = ({ open, onClose }) => {
             fullWidth
             margin="normal"
             // value={package}
-            onChange={(e) => setPackage(e.target.value)}
+            // onChange={(e) => setPackage(e.target.value)}
           />
           <TextField
             label="Salary"

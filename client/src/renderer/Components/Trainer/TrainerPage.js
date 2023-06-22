@@ -20,152 +20,40 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import TrainerEditModal from './TrainerModals/TrainerEditModal';
 import TrainerViewModal from './TrainerModals/TrainerViewModal';
 import SalaryModal from './TrainerModals/SalaryModal';
+import { classes } from './Style'
+import { scrollbarStyle } from 'renderer/Common/scrollbarStyle';
 
 const TrainerPage = () => {
-  // Trainers data array
 
   const [data, setData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [attendance, setAttendance] = useState([]);
-  const [id, setId] = useState(null);
-
+  const [id, setId] = useState(null)
   const fetchTrainersData = async () => {
     try {
-      const trainersResponse = await axios.get(
-        'http://localhost:7000/trainers/'
-      );
+      const trainersResponse = await axios.get('http://localhost:7000/trainers/');
       const trainers = trainersResponse.data;
 
       const trainersDataPromises = trainers.map(async (trainer) => {
-        const attendanceResponse = await axios.get(
-          `http://localhost:7000/trainers/attendence/${trainer._id}`
-        );
-        return { ...trainer, attendance: attendanceResponse.data };
+        const attendanceResponse = await axios.get(`http://localhost:7000/trainers/attendence/${trainer._id}`);
+        console.log(attendanceResponse.data,"attendance response")
+        if (attendanceResponse.data) {
+           return { ...trainer, attendance: attendanceResponse.data } 
+          } else {
+          console.log('returning')
+          return { ...trainer } }
       });
 
       const trainersData = await Promise.all(trainersDataPromises);
+      
       setData(trainersData);
-      console.log('data', data);
+      console.log('data', data)
     } catch (error) {
       console.error('Error fetching trainers data:', error);
     }
   };
 
   fetchTrainersData();
-
-  // const trainerss =
-
-  const classes = {
-    container: {
-      width: '90%',
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '24px',
-      marginTop: '60px',
-    },
-    card: {
-      flex: '1',
-      width: '100px',
-      height: '100%',
-      borderRadius: '8px',
-      background: '#f0f0f0',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '16px',
-      fontWeight: 'bold',
-      cursor: 'pointer',
-      transition: 'background 0.3s ease',
-      color: 'white',
-    },
-    trainersListContainer: {
-      width: '100%',
-      height: '350px',
-      border: '1px solid #ccc',
-      borderRadius: '10px',
-      overflowY: 'auto',
-      padding: '16px',
-    },
-    trainersRow: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      borderBottom: '1px solid #ccc',
-      padding: '8px',
-      fontSize: '14px',
-    },
-    trainersButtons: {
-      display: 'flex',
-      gap: '8px',
-    },
-    viewButton: {
-      padding: '4px 8px',
-      background: '#00aaff',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      transition: 'background 0.3s ease',
-    },
-    editButton: {
-      padding: '4px 8px',
-      background: '#ffaa00',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      transition: 'background 0.3s ease',
-    },
-    removeButton: {
-      padding: '4px 8px',
-      background: '#ff0000',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      transition: 'background 0.3s ease',
-    },
-    searchContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: '16px',
-      borderRadius: '20px',
-      background: 'white',
-      padding: '8px',
-      border: '1px solid #ccc',
-      width: '30%',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    },
-    searchInput: {
-      marginRight: '8px',
-      outline: 'none',
-      border: 'none',
-      flexGrow: 1,
-      height: '20px',
-    },
-  };
-
-  const scrollbarStyle = `
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
-  }
-`;
-
-  // Apply the custom scrollbar style
+  
   const CustomScrollbarStyle = () => (
     <style dangerouslySetInnerHTML={{ __html: scrollbarStyle }} />
   );
@@ -178,8 +66,6 @@ const TrainerPage = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [salaryModalOpen, setSalaryModalOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchInput, setSearchInput] = useState('');
 
   // OPTIONSS
   const handleOptionChange = (event) => {
@@ -187,28 +73,15 @@ const TrainerPage = () => {
   };
   const deleteTranier = async (id) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:7000/trainers/${id}`
-      );
-      console.log(`user deleted`, response.data);
+      const response = await axios.delete(`http://localhost:7000/trainers/${id}`)
+      console.log(`user deleted`, response.data)
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
+  }
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-
-  const handleSearchInputChange = (event) => {
-    const inputValue = event.target.value;
-    setSearchInput(inputValue);
-  
-    const filteredTrainers = data.filter((trainer) =>
-      trainer.name.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    setFilteredData(filteredTrainers);
-  };
-  
 
   // TRAINER MODAL
 
@@ -245,12 +118,14 @@ const TrainerPage = () => {
   const handleViewModalOpen = () => {
     setSelectedTrainer();
     setViewModalOpen(true);
+
   };
 
   const handleViewModalClose = () => {
     setViewModalOpen(false);
     setSelectedTrainer(null);
   };
+
 
   const handleSalaryModalOpen = () => {
     setSalaryModalOpen(true);
@@ -262,7 +137,9 @@ const TrainerPage = () => {
 
   // Render the trainers' data and an "View" button for each trainer
   const renderTrainers = (trainers) => {
+
     return trainers.map((trainer) => (
+
       <div key={trainer.id}>
         <span>{trainer.name}</span>
         <span>{trainer.email}</span>
@@ -281,8 +158,6 @@ const TrainerPage = () => {
             variant="outlined"
             size="small"
             placeholder="Search"
-            value={searchInput}
-            onChange={handleSearchInputChange}
           />
           <SearchIcon />
         </div>
@@ -324,11 +199,44 @@ const TrainerPage = () => {
             </Button>
 
             {/* Modal component */}
-            <SalaryModal
-              open={salaryModalOpen}
-              onClose={handleSalaryModalClose}
-            />
+            <SalaryModal open={salaryModalOpen} onClose={handleSalaryModalClose} />
           </div>
+
+          {/* Dropdown filter */}
+          <FormControl
+            variant="outlined"
+            style={{
+              marginBottom: '16px',
+              minWidth: '200px',
+              backgroundColor: 'white',
+              borderRadius: '20px',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              width: '80px',
+            }}
+          >
+            <InputLabel style={{ marginLeft: '8px' }}>
+              Filter Trainers
+            </InputLabel>
+            <Select
+              value={selectedOption}
+              onChange={handleOptionChange}
+              label="Select Option"
+              style={{
+                paddingLeft: '8px',
+                fontFamily: 'sans-serif',
+                fontWeight: 'bold',
+                borderRadius: '20px',
+              }}
+            >
+              <MenuItem value="option1" selected>
+                All
+              </MenuItem>
+              <MenuItem value="option2">Active Trainers</MenuItem>
+              <MenuItem value="option3">Inactive Trainers</MenuItem>
+              <MenuItem value="option4">Men</MenuItem>
+              <MenuItem value="option5">Women</MenuItem>
+            </Select>
+          </FormControl>
         </div>
       </div>
       <div>
@@ -342,9 +250,9 @@ const TrainerPage = () => {
           }}
         >
           <h4 style={{ flex: 1, marginLeft: '30px' }}>NAME</h4>
-          <h4 style={{ flex: 1, textAlign: 'right', marginRight: '80px' }}>
-            SELECT AN ACTION
-          </h4>
+          <h4 style={{ flex: 1 }}>DATE</h4>
+          <h4 style={{ flex: 1 }}>TIME</h4>
+          <h4 style={{ flex: 1, marginRight: '-80px' }}>SELECT AN ACTION</h4>
         </div>
 
         <div style={classes.trainersListContainer}>
@@ -352,6 +260,7 @@ const TrainerPage = () => {
           {/* Trainers list */}
           {data.map((trainers, index) => (
             <div key={trainers._id} style={classes.trainersRow}>
+
               <div>{trainers.name}</div>
 
               <div style={classes.trainersButtons}>
@@ -364,8 +273,7 @@ const TrainerPage = () => {
                 <TrainerViewModal
                   open={viewModalOpen}
                   onClose={handleViewModalClose}
-                  key={trainers._id}
-                  trainer={trainers}
+                  key={trainers._id} trainer={trainers}
                 />
                 {/* <button
                   style={classes.editButton}
@@ -378,12 +286,7 @@ const TrainerPage = () => {
                   onClose={handleEditModalClose}
                   trainer={trainers}
                 />
-                <button
-                  onClick={() => deleteTranier(trainers._id)}
-                  style={classes.removeButton}
-                >
-                  Remove
-                </button>
+                <button onClick={() => deleteTranier(trainers._id)} style={classes.removeButton}>Remove</button>
                 <div>
                   <IconButton
                     onClick={handleOpenCalendarModal}
@@ -400,7 +303,8 @@ const TrainerPage = () => {
                   <CalendarModal
                     open={openCalendarModal}
                     onClose={handleCloseCalendarModal}
-                    data={trainers.attendance}
+                    
+                    data={trainers.attendance?trainers:null}
                   />
                 </div>
               </div>

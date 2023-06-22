@@ -2,7 +2,9 @@ import React from 'react';
 import { makeStyles } from '@mui/styles';
 import Navbar from 'renderer/Components/Navbar';
 import Sidebar from 'renderer/Components/Sidebar';
-import UserPage from 'renderer/Components/UserPage/UserPage';
+import UserPage from 'renderer/Components/UserPage/UserPage'
+
+
 
 const User = () => {
   const classes = useStyles();

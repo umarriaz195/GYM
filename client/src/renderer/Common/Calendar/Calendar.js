@@ -61,24 +61,33 @@ const CustomCalendar = styled(Calendar)(({ theme }) => ({
     },
   },
 }));
-
-const CalendarModal = ({ open, onClose,data }) => {
-  const attend=data
+const CalendarModal = ({ open, onClose, data }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const trainerData = [ ];
-  for(const x of attend.attendance){
-    const timeCheckIn=new Date(x.checkInTime)
-    const timeCheckOut=new Date(x.checkOutTime)
-  
-    console.log('attendece',timeCheckIn.getDate())
-   trainerData.push( {
-    date: new Date(timeCheckIn.getFullYear(), timeCheckIn.getMonth(), timeCheckIn.getDate()),
-    present: true,
-    checkInTime: timeCheckIn.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-    checkOutTime: timeCheckOut.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-  })
+  const trainerData = [];
+
+  if (data && data.attendance) {
+    for (const attend of data.attendance.attendance) {
+      const timeCheckIn = new Date(attend.checkInTime);
+      const timeCheckOut = new Date(attend.checkOutTime);
+
+      trainerData.push({
+        date: new Date(
+          timeCheckIn.getFullYear(),
+          timeCheckIn.getMonth(),
+          timeCheckIn.getDate()
+        ),
+        present: true,
+        checkInTime: timeCheckIn.toLocaleTimeString([], {
+          hour: 'numeric',
+          minute: '2-digit',
+        }),
+        checkOutTime: timeCheckOut.toLocaleTimeString([], {
+          hour: 'numeric',
+          minute: '2-digit',
+        }),
+      });
+    }
   }
-// console.log('trainers DATA')
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -88,10 +97,6 @@ const CalendarModal = ({ open, onClose,data }) => {
     event.preventDefault();
     // Perform form submission logic here
   };
-
-
-
-
 
   const [showDetail, setShowDetail] = useState(false);
 
@@ -150,18 +155,24 @@ const CalendarModal = ({ open, onClose,data }) => {
           {showDetail && (
             <div
               style={{
-         
-               display: 'flex',
-               flexDirection: 'column',
+                display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 color: 'gray',
-                fontSize: '1.1rem'
-
+                fontSize: '1.1rem',
               }}
             >
-              <p style={{ fontSize: '1.3rem' }}>{trainerData.selectedDate}</p>
-              <div >Check-in Time: {trainerData.selectedDate.checkInTime || 'N/A'}</div>
-              <div>Check-out Time: {trainerData.selectedDate.checkOutTime || 'N/A'}</div>
+              <p style={{ fontSize: '1.3rem' }}>{selectedDate.toDateString()}</p>
+              <div>
+                Check-in Time: {trainerData.find(
+                  (item) => item.date.toDateString() === selectedDate.toDateString()
+                )?.checkInTime ?? 'N/A'}
+              </div>
+              <div>
+                Check-out Time: {trainerData.find(
+                  (item) => item.date.toDateString() === selectedDate.toDateString()
+                )?.checkOutTime ?? 'N/A'}
+              </div>
             </div>
           )}
           <DialogActions>

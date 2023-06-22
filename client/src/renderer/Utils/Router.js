@@ -4,6 +4,7 @@ import Dashboard from 'renderer/Pages/Dashboard';
 import User from 'renderer/Pages/User';
 import Trainer from 'renderer/Pages/Trainer';
 import Message from 'renderer/Pages/Message';
+import Expenses from 'renderer/Pages/Expenses';
 import Login from 'renderer/Auth/Login';
 
 
@@ -16,6 +17,7 @@ const AppRouter = () => {
         <Route exact path="/member" element={<User />} />
         <Route exact path="/trainer" element={<Trainer />} />
         <Route exact path="/message" element={<Message />} />
+        <Route exact path="/expenses" element={<Expenses />} />
       </Routes>
     </Router> 
   );

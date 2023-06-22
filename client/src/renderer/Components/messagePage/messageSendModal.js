@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import { Button, FormControlLabel, Checkbox, IconButton } from '@mui/material';
+import {
+  TextField,
+  Button,
+  FormControlLabel,
+  Checkbox,
+  InputAdornment,
+  IconButton,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import { scrollbarStyle } from 'renderer/Common/scrollbarStyle';
 import axios from 'axios';
 
 const MessageSendModal = ({ onClose, data }) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedOption, setSelectedOption] = useState('all');
 
   const trainers = ['Rahim', 'Umar', 'Umer', 'Haseeb'];
@@ -11,47 +21,76 @@ const MessageSendModal = ({ onClose, data }) => {
 
   const handleSend = async () => {
     // Perform send message logic here
-    console.log('Sending message to selected users', data);
+    console.log('Sending message to selected users',data);
     try {
-      const response = await axios.post('http://localhost:7000/admin/ok/', {
-        recipients: selectedOption,
-        message: data,
-      });
-      console.log(response);
+      const response = await axios.post('http://localhost:7000/admin/ok/', {recipients:selectedOption,message:data})
+      console.log(response)
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
     onClose();
   };
 
-  const renderRecipientOptions = () => {
+  const handleSearch = () => {
+    // Perform search logic here
+    console.log('Searching for:', searchQuery);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    // Perform clear search logic here
+    console.log('Clearing search');
+  };
+
+  const CustomScrollbarStyle = () => (
+    <style dangerouslySetInnerHTML={{ __html: scrollbarStyle }} />
+  );
+
+  const renderUserList = () => {
+    let users = [];
+
+    if (selectedOption === 'all') {
+      users = [...trainers, ...members];
+    } else if (selectedOption === 'trainers') {
+      users = trainers;
+    } else if (selectedOption === 'members') {
+      users = members;
+    }
+
     return (
-      <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-        <label
-          htmlFor="recipient-select"
-          style={{ marginRight: '10px', fontWeight: 'bold' }}
-        >
-          Recipients:
-        </label>
-        <select
-          id="recipient-select"
-          value={selectedOption}
-          onChange={(e) => setSelectedOption(e.target.value)}
-          style={{
-            flex: '1',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #bdbdbd',
-          }}
-        >
-          <option value="all">All</option>
-          <option value="trainers">All Trainers</option>
-          <option value="members">All Members</option>
-        </select>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: '15px',
+          overflowY: 'auto',
+          backgroundColor: 'white',
+          border: '1px solid #bdbdbd',
+          marginTop: '10px',
+          height: '290px',
+        }}
+      >
+        {users.map((user, index) => (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '8px 15px',
+              borderBottom: '1px solid #bdbdbd',
+            }}
+          >
+            <FormControlLabel
+              control={<Checkbox />}
+              label={user}
+              style={{ flex: '1' }}
+            />
+          </div>
+        ))}
       </div>
     );
   };
-  
 
   return (
     <div
@@ -68,23 +107,64 @@ const MessageSendModal = ({ onClose, data }) => {
         zIndex: 9999,
       }}
     >
+      <CustomScrollbarStyle />
       <div
         style={{
           width: '400px',
           backgroundColor: 'white',
           borderRadius: '15px',
           padding: '20px',
+
         }}
       >
         <div
           style={{
             display: 'flex',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             marginBottom: '10px',
           }}
         >
-          {renderRecipientOptions()}
+          <TextField
+            label="Search"
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ flex: '1', borderRadius: '20px' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClearSearch}
+                    edge="end"
+                    size="small"
+                    style={{ visibility: searchQuery ? 'visible' : 'hidden' }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <IconButton
+            onClick={handleSearch}
+            color="primary"
+            size="small"
+            disabled={!searchQuery}
+          >
+            <SearchIcon />
+          </IconButton>
+          <select
+            value={selectedOption}
+            onChange={(e) => setSelectedOption(e.target.value)}
+            style={{ maxWidth: '150px' }}
+          >
+            <option value="all">Show All</option>
+            <option value="trainers">All Trainers</option>
+            <option value="members">All Members</option>
+          </select>
         </div>
+        {renderUserList()}
         <div
           style={{
             display: 'flex',
@@ -111,9 +191,10 @@ const MessageSendModal = ({ onClose, data }) => {
             onClick={handleSend}
             style={{
               borderRadius: '20px',
-              backgroundColor: '#0d1a52',
+              backgroundColor: '#4caf50',
               color: 'white',
-              width: '100px',
+
+              width: '100px'
             }}
           >
             Send

@@ -19,10 +19,10 @@ const ModalContent = styled(DialogContent)(({ theme }) => ({
 }));
 
 const TrainerEditModal = ({  trainer }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [salary, setSalary] = useState('');
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
+  const [salary, setSalary] = useState();
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -60,10 +60,19 @@ const TrainerEditModal = ({  trainer }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-const payload={        name: name,
-  email: email,
-  phone: phone,
-  salary: salary,}
+const payload={ }
+  if(name){
+    payload.name=name
+  }
+  if(email){
+    payload.email=email
+  }
+  if(phone){
+    payload.phone=phone
+  }
+  if(salary){
+    payload.salary=salary
+  }
   console.log('payloadddddddddddddddddddddd',payload)
     try {
       await axios.put(`http://localhost:7000/trainers/${trainer._id}`, payload);
@@ -120,7 +129,7 @@ const payload={        name: name,
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button type="submit" color="primary">
+            <Button onClick={handleClose} type="submit" color="primary">
               Save
             </Button>
           </DialogActions>
