@@ -74,7 +74,7 @@ const DashboardPage = () => {
                     variant="subtitle1"
                     style={{
                       fontSize: '12px',
-                      marginTop: '-30px',
+                      marginTop: '-20px',
                       color: 'gray',
                       fontWeight: 'bold',
                     }}
@@ -93,8 +93,8 @@ const DashboardPage = () => {
                 style={{
                   fontSize: '35px',
                   fontWeight: 'bold',
-                  marginTop: '-30px',
-                  marginBottom: '10px',
+                  marginTop: '-15px',
+                  // marginBottom: '10px',
                 }}
               >
                 {`Rs.${balance}`}
@@ -279,9 +279,12 @@ const DashboardPage = () => {
                 height: '85%',
                 display: 'flex',
                 borderRadius: '15px',
-                overflow: 'auto',
+                overflowY: 'auto',
+                overflowX: 'hidden',
                 backgroundColor: 'white',
                 border: '1px solid #bdbdbd',
+                textTransform: 'uppercase',
+                fontSize: '14px'
               }}
             >
               <div style={{ margin: 'auto', maxWidth: '700px' }}>
@@ -335,9 +338,12 @@ const DashboardPage = () => {
                 height: '85%',
                 display: 'flex',
                 borderRadius: '15px',
-                overflow: 'auto',
+                overflowY: 'auto',
+                overflowX: 'hidden',
                 backgroundColor: 'white',
                 border: '1px solid #bdbdbd',
+                textTransform: 'uppercase',
+                fontSize: '14px'
               }}
             >
               <div style={{ margin: 'auto', maxWidth: '700px' }}>
@@ -347,6 +353,7 @@ const DashboardPage = () => {
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
+                      alignItems: 'flex-start',
                       width: '450px',
                       padding: '8px 15px',
                       borderBottom: '1px solid #bdbdbd',

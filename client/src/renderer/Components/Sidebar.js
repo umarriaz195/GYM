@@ -64,8 +64,8 @@ const Sidebar = () => {
     navigate('/message');
   };
 
-  const gotoExpenses = () => {
-    navigate('/expenses');
+  const gotoMaintenance = () => {
+    navigate('/maintenance');
   };
 
   return (
@@ -130,14 +130,14 @@ const Sidebar = () => {
             button
             style={{
               ...listItemStyle,
-              backgroundColor: location.pathname === '/expenses' ? '#bdbdbd' : 'initial',
+              backgroundColor: location.pathname === '/maintenance' ? '#bdbdbd' : 'initial',
             }}
-            onClick={gotoExpenses}
+            onClick={gotoMaintenance}
           >
             <ListItemIcon style={listItemIconStyle}>
               <AccountBalanceWalletIcon />
             </ListItemIcon>
-            <ListItemText primary={<Typography style={textStyle}>Expense</Typography>} />
+            <ListItemText primary={<Typography style={textStyle}>Maintenance</Typography>} />
           </ListItem>
         </List>
       </Drawer>

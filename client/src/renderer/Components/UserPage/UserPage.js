@@ -36,11 +36,7 @@ const UserPage = () => {
         url += '?filter=active';
       } else if (filter === 'inactive') {
         url += '?filter=inactive';
-      } else if (filter === 'male') {
-        url += '?filter=male';
-      } else if (filter === 'female') {
-        url += '?filter=female';
-      }
+      } 
 
       const response = await axios.get(url);
       setMembers(response.data.members);
@@ -64,21 +60,22 @@ const UserPage = () => {
   const handleOptionChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedOption(selectedValue);
-
+  
     if (selectedValue === '') {
       setFilteredMembers(members);
     } else if (selectedValue === 'option1') {
       const activeMembers = members.filter(
-        (member) => member.status === 'Active'
+        (member) => member.isActive
       );
       setFilteredMembers(activeMembers);
     } else if (selectedValue === 'option2') {
       const inactiveMembers = members.filter(
-        (member) => member.status === 'Inactive'
+        (member) => !member.isActive
       );
       setFilteredMembers(inactiveMembers);
     }
   };
+  
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -199,8 +196,6 @@ const UserPage = () => {
               <MenuItem value="">All</MenuItem>
               <MenuItem value="option1">Active Members</MenuItem>
               <MenuItem value="option2">Inactive Members</MenuItem>
-              <MenuItem value="option3">Men</MenuItem>
-              <MenuItem value="option4">Women</MenuItem>
             </Select>
           </FormControl>
         </div>

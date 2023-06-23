@@ -66,7 +66,7 @@ const CalendarModal = ({ open, onClose, data }) => {
   const trainerData = [];
 
   if (data && data.attendance) {
-    for (const attend of data.attendance.attendance) {
+    for (const attend of data.attendance) {
       const timeCheckIn = new Date(attend.checkInTime);
       const timeCheckOut = new Date(attend.checkOutTime);
 

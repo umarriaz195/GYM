@@ -19,8 +19,9 @@ export const classes = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      borderBottom: '1px solid #ccc',
+      // borderBottom: '1px solid #ccc',
       padding: '8px',
       fontSize: '14px',
+      textTransform: 'uppercase'
     },
   };

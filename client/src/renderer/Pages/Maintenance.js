@@ -2,10 +2,10 @@ import React from 'react';
 import { makeStyles } from '@mui/styles';
 import Sidebar from 'renderer/Components/Sidebar';
 import Navbar from 'renderer/Components/Navbar';
-import ExpensesPage from 'renderer/Components/Expenses/ExpensesPage';
+import MaintenancePage from 'renderer/Components/Maintenance/MaintenancePage';
 
 
-const Expenses = () => {
+const Maintenance = () => {
   const classes = useStyles();
 
   return (
@@ -18,7 +18,7 @@ const Expenses = () => {
           <Navbar />
         </div>
         <div className={classes.content}>
-          <ExpensesPage />
+          <MaintenancePage />
         </div>
       </div>
     </div>
@@ -59,4 +59,4 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default Expenses;
+export default Maintenance;

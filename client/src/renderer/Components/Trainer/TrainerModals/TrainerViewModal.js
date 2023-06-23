@@ -31,18 +31,16 @@ const TrainerViewModal = ({ trainer }) => {
   };
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
-
   const handlePaySalary = async (id) => {
     // Perform logic to pay salary here
     setConfirmModalOpen(false);
     try {
-      const response = await axios.put(`http://localhost:7000/admin/pay/${id}`)
-      console.log('salary paidd', response)
+      const response = await axios.put(`http://localhost:7000/admin/pay/${id}`);
+      console.log('salary paidd', response);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   };
-
 
   const handleConfirm = () => {
     setConfirmModalOpen(true);
@@ -54,10 +52,21 @@ const TrainerViewModal = ({ trainer }) => {
 
   return (
     <>
-      <Button style={classes.viewButton} onClick={handleOpen}>View</Button>
-      <Dialog open={open} onClose={handleClose} style={{ borderRadius: '5px', backgroundColor: 'transparent' }}>
+      <Button style={classes.viewButton} onClick={handleOpen}>
+        View
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        style={{ borderRadius: '5px', backgroundColor: 'transparent' }}
+      >
         <ModalContent>
-          <Typography variant="h5" component="div" gutterBottom style={{ marginLeft: '100px' }}>
+          <Typography
+            variant="h5"
+            component="div"
+            gutterBottom
+            style={{ marginLeft: '100px' }}
+          >
             Trainer Details
           </Typography>
           <Typography variant="body1" component="div" gutterBottom>
@@ -73,12 +82,24 @@ const TrainerViewModal = ({ trainer }) => {
             <strong>Date Joined:</strong> {trainer.picture}
           </Typography>
           <div style={{ display: 'flex' }}>
-            <DialogActions style={{ marginLeft: '140px', backgroundColor: 'orange', borderRadius: '5px' }}>
+            <DialogActions
+              style={{
+                marginLeft: '140px',
+                backgroundColor: 'orange',
+                borderRadius: '5px',
+              }}
+            >
               <Button onClick={handleClose} style={{ color: 'white' }}>
                 Close
               </Button>
             </DialogActions>
-            <DialogActions style={{ backgroundColor: '#0d1a52', borderRadius: '5px', marginLeft: '5px' }}>
+            <DialogActions
+              style={{
+                backgroundColor: '#0d1a52',
+                borderRadius: '5px',
+                marginLeft: '5px',
+              }}
+            >
               <Button onClick={handleConfirm} style={{ color: 'white' }}>
                 Pay Salary
               </Button>
@@ -97,7 +118,10 @@ const TrainerViewModal = ({ trainer }) => {
             <Button onClick={handleCancel} style={{ color: 'red' }}>
               Cancel
             </Button>
-            <Button onClick={() => handlePaySalary(trainer._id)} style={{ color: 'green' }}>
+            <Button
+              onClick={() => handlePaySalary(trainer._id)}
+              style={{ color: 'green' }}
+            >
               Confirm
             </Button>
           </DialogActions>
@@ -118,4 +142,4 @@ const classes = {
     cursor: 'pointer',
     transition: 'background 0.3s ease',
   },
-}
+};

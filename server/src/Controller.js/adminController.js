@@ -324,3 +324,132 @@ exports.paySalary = async (req, res) => {
     console.log(e)
   }
 }
+
+
+const Expense = require('../Models/expense');
+
+exports.addExpense = async (req, res) => {
+  try {
+    const { expenseName, amount } = req.body;
+
+    
+    let account = await Account.findOne();
+    if (!account) {
+      account = await Account.create();
+    }
+
+    
+    if (amount > account.balance) {
+      return res.status(400).json({ message: 'Insufficient balance in account' });
+    }
+
+    
+    account.balance -= amount;
+
+   
+    account.record.push({ source: expenseName, amount: -amount, type: 'expense' });
+
+   
+    await account.save();
+
+    
+    const expense = new Expense({ expenseName, amount });
+    await expense.save();
+
+    res.status(200).json({ message: 'Expense added successfully' });
+  } catch (error) {
+    console.error('Error adding expense:', error.message);
+    res.status(500).json({ message: 'Failed to add expense' });
+  }
+};
+
+
+// Update an expense
+exports.updateExpense = async (req, res) => {
+  try {
+    const { expenseName, amount } = req.body;
+    const { expenseId } = req.params;
+
+    
+    const expense = await Expense.findById(expenseId);
+    if (!expense) {
+      return res.status(404).json({ message: 'Expense not found' });
+    }
+
+    
+    const account = await Account.findOne();
+    if (!account) {
+      return res.status(404).json({ message: 'Account not found' });
+    }
+
+   
+    const amountDiff = amount - expense.amount;
+
+    
+    if (amountDiff > account.balance) {
+      return res.status(400).json({ message: 'Insufficient balance in account' });
+    }
+
+    
+    expense.expenseName = expenseName;
+    expense.amount = amount;
+    await expense.save();
+
+    
+    account.balance -= amountDiff;
+    const expenseRecord = account.record.find(record => record._id.equals(expenseId));
+    if (expenseRecord) {
+      expenseRecord.source = expenseName;
+      expenseRecord.amount = -amount;
+    }
+    await account.save();
+
+    res.status(200).json({ message: 'Expense updated successfully' });
+  } catch (error) {
+    console.error('Error updating expense:', error.message);
+    res.status(500).json({ message: 'Failed to update expense' });
+  }
+};
+
+// Remove an expense
+exports.removeExpense = async (req, res) => {
+  try {
+    const { expenseId } = req.params;
+
+  
+    const expense = await Expense.findById(expenseId);
+    if (!expense) {
+      return res.status(404).json({ message: 'Expense not found' });
+    }
+
+    
+    let account = await Account.findOne();
+    if (!account) {
+      account = await Account.create();
+    }
+
+  
+    account.balance += expense.amount;
+    await account.save();
+
+    
+    await expense.deleteOne();
+
+    res.status(200).json({ message: 'Expense removed successfully' });
+  } catch (error) {
+    console.error('Error removing expense:', error.message);
+    res.status(500).json({ message: 'Failed to remove expense' });
+  }
+};
+
+exports.getAllExpenses = async (req, res) => {
+  try {
+    // Find all expense documents
+    const expenses = await Expense.find();
+
+    res.status(200).json({ expenses });
+  } catch (error) {
+    console.error('Error retrieving expenses:', error.message);
+    res.status(500).json({ message: 'Failed to retrieve expenses' });
+  }
+};

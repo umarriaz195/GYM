@@ -304,7 +304,7 @@ const TrainerPage = () => {
                     open={openCalendarModal}
                     onClose={handleCloseCalendarModal}
                     
-                    data={trainers.attendance?trainers:null}
+                    data={trainers.attendance ? trainers.attendance : null}
                   />
                 </div>
               </div>
